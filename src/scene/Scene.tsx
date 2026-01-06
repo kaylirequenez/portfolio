@@ -1,7 +1,9 @@
 import { Canvas, useThree } from "@react-three/fiber";
 import Avatar from "./Avatar";
 import "./Scene.css";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import NamePlate from "../components/avatar/NamePlate";
+import { profile } from "../data/profile";
 function CameraController() {
   const { camera } = useThree();
   useEffect(() => {
@@ -32,7 +34,15 @@ export default function AvatarScene() {
         <CameraController />
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 10, 7.5]} intensity={1} />
-        <Avatar mainView={mainView} onAvatarClick={handleAvatarClick} />
+        <Suspense fallback={null}>
+          <group>
+            <Avatar mainView={mainView} onAvatarClick={handleAvatarClick} />
+
+            {mainView && (
+              <NamePlate name={profile.name} headline={profile.hero.headline} />
+            )}
+          </group>
+        </Suspense>
       </Canvas>
     </div>
   );

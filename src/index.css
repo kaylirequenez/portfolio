@@ -2,8 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reset + full height */
 html,
 body,
 #root {
+  width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Global theme background */
+body {
+  background-color: #0b0d12; /* theme background */
+  color: #eaeaf0; /* default text color */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  overflow: hidden; /* prevents scrollbars in main view */
 }

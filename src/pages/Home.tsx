@@ -1,4 +1,4 @@
-import AvatarScene from "../models/Scene";
+import AvatarScene from "../scene/Scene";
 
 export default function Home() {
   return (
