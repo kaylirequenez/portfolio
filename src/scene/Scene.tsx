@@ -4,6 +4,8 @@ import "./Scene.css";
 import { Suspense, useEffect, useState } from "react";
 import NamePlate from "../components/avatar/NamePlate";
 import { profile } from "../data/profile";
+import RoleCallout from "../components/avatar/RoleCallout";
+
 function CameraController() {
   const { camera } = useThree();
   useEffect(() => {
@@ -39,7 +41,18 @@ export default function AvatarScene() {
             <Avatar mainView={mainView} onAvatarClick={handleAvatarClick} />
 
             {mainView && (
-              <NamePlate name={profile.name} headline={profile.hero.headline} />
+              <>
+                {/* Name above avatar */}
+                <NamePlate
+                  name={profile.name}
+                  headline={profile.identity.title}
+                />
+
+                {/* Main Roles */}
+                <RoleCallout roles={profile.hero.roleFacets} />
+
+                {/* Click instruction below avatar */}
+              </>
             )}
           </group>
         </Suspense>

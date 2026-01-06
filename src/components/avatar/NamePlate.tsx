@@ -32,7 +32,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
         color="#5EE6D6"
         anchorX="center"
         anchorY="middle"
-        position={[0, 0.115, -0.01]}
+        position={[0, 0.05, -0.01]}
         material={
           new THREE.MeshBasicMaterial({
             transparent: true,
@@ -50,7 +50,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
         color="#EAEAF0"
         anchorX="center"
         anchorY="middle"
-        position={[0, 0.14, 0]}
+        position={[0, 0.08, 0]}
       >
         {name.toUpperCase()}
       </Text>
@@ -63,7 +63,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
         color="#8F94AA"
         anchorX="center"
         anchorY="middle"
-        position={[0, -0.1, 0]}
+        position={[0, -0.21, 0]}
       >
         {headline}
       </Text>

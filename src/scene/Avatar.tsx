@@ -70,7 +70,7 @@ const Avatar = ({ mainView, onAvatarClick, ...props }: AvatarProps) => {
   const visualCenterX = -centerX * (viewport.width > 6 ? 0.02 : 0);
 
   const { position } = useSpring({
-    position: mainView ? [visualCenterX, -1, 0] : [leftHalfCenterX, -1, 0],
+    position: mainView ? [visualCenterX, -1.2, 0] : [leftHalfCenterX, -1, 0],
     config: { mass: 1, tension: 120, friction: 14 },
   });
 

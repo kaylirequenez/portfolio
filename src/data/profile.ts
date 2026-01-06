@@ -1,5 +1,13 @@
-export type SkillBadge = { label: string; emoji?: string };
-export type Stat = { label: string; value: number; note?: string };
+// =====================
+// Types
+// =====================
+
+export type RoleFacet = {
+  id: string;
+  title: string;
+  description: string;
+  highlights: string[];
+};
 
 export type Project = {
   title: string;
@@ -7,57 +15,102 @@ export type Project = {
   tags: string[];
 };
 
+export type Experience = {
+  company: string;
+  role: string;
+  description: string;
+};
+
+// =====================
+// Profile
+// =====================
+
 export const profile = {
   name: "Kayli Requenez",
-  role: "Computer Science & Engineering @ MIT",
-  tagline: "ML · Systems · Creative Technology",
-  about:
-    "I build intelligent systems and creative software at the intersection of machine learning, engineering, and music.",
-  links: {
-    github: "https://github.com/kaylirequenez",
-    linkedin: "https://linkedin.com/in/kaylirequenez",
-    email: "kayli195@mit.edu",
+
+  identity: {
+    title: "Creative Technologist",
+    description:
+      "I design intelligent, expressive systems at the intersection of music, machine learning, and software engineering.",
   },
 
   hero: {
-    headline: "Creative Technologist",
-    subheadline: "ML · Systems · Music Tech",
-    classLine: "Class: Creative Technologist • Specialty: Music + ML",
-
-    orbitBadges: [
-      { emoji: "🧠", label: "Machine Learning" },
-      { emoji: "🎵", label: "Music Tech" },
-      { emoji: "🗣️", label: "NLP / LLMs" },
-      { emoji: "🖥️", label: "Systems" },
-      { emoji: "✨", label: "Creative Coding" },
-      { emoji: "🔊", label: "Audio" },
+    roleFacets: [
+      {
+        id: "audio-systems",
+        title: "Audio Systems Engineer",
+        description:
+          "I design musical systems that translate theory, composition, and human intuition into expressive software.",
+        highlights: [
+          "Music Theory & Composition",
+          "Audio System Design",
+          "Creative Tooling & IDEs",
+          "Audio–Visual Systems",
+        ],
+      },
+      {
+        id: "ml-systems",
+        title: "Machine Learning Systems Engineer",
+        description:
+          "I build and reason about machine learning systems, with a research focus on language and structured learning problems.",
+        highlights: [
+          "Machine Learning",
+          "Language & NLP Systems",
+          "Model Reasoning",
+          "Applied Research",
+        ],
+      },
+      {
+        id: "distributed-systems",
+        title: "Distributed Systems Engineer",
+        description:
+          "I design resilient systems under real-world constraints like limited bandwidth, latency, and partial failure.",
+        highlights: [
+          "Distributed Systems",
+          "Fault Tolerance",
+          "Systems Engineering",
+          "Resource-Constrained Design",
+        ],
+      },
+      {
+        id: "user-centered",
+        title: "User-Centered Software Engineer",
+        description:
+          "I make engineering decisions grounded in real user behavior, product goals, and long-term system usability.",
+        highlights: [
+          "Customer-Driven Design",
+          "Observability & Metrics",
+          "Product Thinking",
+          "Technical Communication",
+        ],
+      },
+      {
+        id: "visual-interactive",
+        title: "Visual & Interactive Systems Designer",
+        description:
+          "I create generative visuals and interactive interfaces that make complex systems intuitive and engaging.",
+        highlights: [
+          "Three.js",
+          "p5.js",
+          "Interactive Visualization",
+          "Creative Coding",
+        ],
+      },
     ],
-
-    stats: [
-      { label: "Machine Learning", value: 4 },
-      { label: "Music Technology", value: 5 },
-      { label: "Systems Engineering", value: 4 },
-      { label: "Creative Coding", value: 5 },
-    ],
-  },
-
-  avatar: {
-    type: "placeholder" as "placeholder" | "image" | "three",
-    imageSrc: "/avatar.png",
   },
 
   projects: [
     {
       title: "Synthetic Languages for Low-Resource LLM Transfer",
       description:
-        "Designed a pipeline for generating synthetic natural languages and improving cross-lingual transfer in low-resource settings.",
-      tags: ["ML", "NLP", "LLMs"],
+        "Designed a deterministic pipeline for generating synthetic natural languages to improve cross-lingual transfer in low-resource settings.",
+      tags: ["Machine Learning", "NLP", "Research"],
     },
     {
       title: "Squawk-Farm: Generative Music Game",
       description:
-        "Built an interactive audio game where voice samples generate musical creatures that perform in synchronized harmony.",
-      tags: ["Audio", "Algorithms", "Creative Tech"],
+        "Built an interactive audio-visual game where voice samples generate musical creatures that perform in synchronized harmony.",
+      tags: ["Audio Systems", "Creative Coding", "Interactive Design"],
     },
   ],
 
@@ -66,13 +119,13 @@ export const profile = {
       company: "Amazon",
       role: "Software Development Engineer Intern",
       description:
-        "Built and shipped features for the Elastic Container Service Console team, improving observability and developer experience.",
+        "Built user-facing features for the ECS Console, focusing on observability, metrics, and customer-driven design decisions.",
     },
     {
       company: "MIT",
       role: "Music Coding Website Researcher & Developer",
       description:
-        "Developed a modular React-based IDE to teach students to code with music, used by MIT's Music Technology course.",
+        "Developed a custom IDE for teaching students to code with music, combining audio systems, visuals, and pedagogy.",
     },
   ],
 };
