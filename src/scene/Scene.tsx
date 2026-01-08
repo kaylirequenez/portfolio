@@ -1,10 +1,13 @@
 import { Canvas, useThree } from "@react-three/fiber";
 import Avatar from "./Avatar";
 import "./Scene.css";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
+import * as THREE from "three";
 import NamePlate from "../components/avatar/NamePlate";
 import { profile } from "../data/profile";
 import RoleCallout from "../components/avatar/RoleCallout";
+import LeftPanel3D from "./LeftPanel3D";
+import { getAvatarMetrics, type AvatarMetrics } from "./avatarMetrics";
 
 function CameraController() {
   const { camera } = useThree();
@@ -29,31 +32,52 @@ export default function AvatarScene() {
   const handleAvatarClick = () => {
     setMainView(!mainView);
   };
+  const avatarRef = useRef<THREE.Object3D>(null);
+  const PanelsHost = ({ mainView }: { mainView: boolean }) => {
+    const { camera, size } = useThree();
+    const [metrics, setMetrics] = useState<AvatarMetrics | undefined>(
+      undefined
+    );
+
+    useEffect(() => {
+      // Recompute when entering panel view and on resize
+      if (!mainView && avatarRef.current) {
+        const m = getAvatarMetrics(avatarRef.current, camera, size);
+        setMetrics(m);
+        if (m) console.log("PanelsHost: computed avatar metrics", m);
+      } else {
+        setMetrics(undefined);
+      }
+    }, [mainView, camera, size]);
+
+    if (!mainView) {
+      return <LeftPanel3D avatarMetrics={metrics} />;
+    }
+    return null;
+  };
   return (
     <div className="avatar-scene-container">
       <Canvas style={{ width: "100%", height: "100%", display: "block" }}>
         <DebugSize />
         <CameraController />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[5, 10, 7.5]} intensity={1} />
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[3, 5, 2]} intensity={1.2} />
         <Suspense fallback={null}>
           <group>
-            <Avatar mainView={mainView} onAvatarClick={handleAvatarClick} />
-
             {mainView && (
-              <>
-                {/* Name above avatar */}
-                <NamePlate
-                  name={profile.name}
-                  headline={profile.identity.title}
-                />
-
-                {/* Main Roles */}
-                <RoleCallout roles={profile.hero.roleFacets} />
-
-                {/* Click instruction below avatar */}
-              </>
+              <NamePlate
+                name={profile.name}
+                headline={profile.identity.title}
+              />
             )}
+            <PanelsHost mainView={mainView} />
+            <Avatar
+              ref={avatarRef}
+              mainView={mainView}
+              onAvatarClick={handleAvatarClick}
+            />
+
+            {mainView && <RoleCallout roles={profile.hero.roleFacets} />}
           </group>
         </Suspense>
       </Canvas>

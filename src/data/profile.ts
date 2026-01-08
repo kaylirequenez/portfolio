@@ -10,6 +10,7 @@ export type RoleFacet = {
 };
 
 export type Project = {
+  id: string;
   title: string;
   description: string;
   tags: string[];
@@ -30,9 +31,55 @@ export const profile = {
 
   identity: {
     title: "Creative Technologist",
-    description:
-      "I design intelligent, expressive systems at the intersection of music, machine learning, and software engineering.",
+    blurb:
+      "Kayli is a computer scientist who designs creative applications—with a special love for interactive music systems—and engineers efficient, real-world solutions. She researches meaningful problems and builds practical, impactful systems driven by the user experience.",
   },
+
+  origin: {
+    homeland: "Miami, FL",
+    institution: "MIT",
+    degree: "Computer Science",
+    minor: "Finance",
+    class: "2026",
+    intel: "98.0%", // derived from GPA 4.8 / 5.0
+  },
+
+  skills: [
+    "Machine Learning & AI",
+    "Systems Engineering",
+    "Audio Systems & DSP",
+    "Algorithms & Data Structures",
+    "Interactive / Creative Coding",
+    "Software Construction",
+  ],
+
+  tools: [
+    "Python, C++, TypeScript, SQL",
+    "PyTorch, TensorFlow, Transformers, LLMs",
+    "React, Node.js, Three.js, Web Audio API",
+    "AWS, Distributed Systems",
+    "Git, REST APIs, MongoDB, Figma",
+  ],
+
+  weaponry: ["🧠 AI", "💻 Computer", "🐞 Debugger"],
+
+  comms: [
+    {
+      label: "SEND TRANSMISSION",
+      action: "email",
+      value: "mailto:kayli195@mit.edu",
+    },
+    {
+      label: "ACCESS REPOSITORY",
+      action: "github",
+      value: "https://github.com/kaylirequenez",
+    },
+    {
+      label: "OPEN NETWORK PROFILE",
+      action: "linkedin",
+      value: "https://linkedin.com/in/kaylirequenez",
+    },
+  ],
 
   hero: {
     roleFacets: [
@@ -44,7 +91,7 @@ export const profile = {
         highlights: [
           "Music Theory & Composition",
           "Audio System Design",
-          "Creative Tooling & IDEs",
+          "Generative & Interactive Music",
           "Audio–Visual Systems",
         ],
       },
@@ -64,24 +111,12 @@ export const profile = {
         id: "distributed-systems",
         title: "Distributed Systems Engineer",
         description:
-          "I design resilient systems under real-world constraints like limited bandwidth, latency, and partial failure.",
+          "I design resilient systems under real-world constraints such as limited bandwidth, latency, and partial failure.",
         highlights: [
           "Distributed Systems",
           "Fault Tolerance",
-          "Systems Engineering",
+          "Networked & Storage Systems",
           "Resource-Constrained Design",
-        ],
-      },
-      {
-        id: "user-centered",
-        title: "User-Centered Software Engineer",
-        description:
-          "I make engineering decisions grounded in real user behavior, product goals, and long-term system usability.",
-        highlights: [
-          "Customer-Driven Design",
-          "Observability & Metrics",
-          "Product Thinking",
-          "Technical Communication",
         ],
       },
       {
@@ -96,36 +131,78 @@ export const profile = {
           "Creative Coding",
         ],
       },
+      {
+        id: "user-centered",
+        title: "User-Centered Software Engineer",
+        description:
+          "I make engineering decisions grounded in real user behavior, product goals, and long-term system usability.",
+        highlights: [
+          "Product Thinking",
+          "Customer-Driven Design",
+          "Observability & Metrics",
+          "Technical Communication",
+        ],
+      },
     ],
   },
 
+  // =====================
+  // Projects (canonical list)
+  // =====================
+
   projects: [
     {
+      id: "synthetic-languages",
       title: "Synthetic Languages for Low-Resource LLM Transfer",
       description:
-        "Designed a deterministic pipeline for generating synthetic natural languages to improve cross-lingual transfer in low-resource settings.",
+        "Designed and implemented a deterministic pipeline for generating synthetic natural languages under strict typological and morphological constraints to improve cross-lingual transfer in low-resource settings.",
       tags: ["Machine Learning", "NLP", "Research"],
     },
     {
-      title: "Squawk-Farm: Generative Music Game",
+      id: "squawk-farm",
+      title: "Squawk-Farm: Generative Music Garden Game",
       description:
-        "Built an interactive audio-visual game where voice samples generate musical creatures that perform in synchronized harmony.",
-      tags: ["Audio Systems", "Creative Coding", "Interactive Design"],
+        "Built an interactive audio-visual game where recorded voice samples generate musical creatures that perform in synchronized harmony, combining generative music systems with playful interaction.",
+      tags: ["Audio Systems", "Generative Music", "Creative Coding"],
+    },
+    {
+      id: "SNORT",
+      title: "SNORT: SolarNet Optimized Routing Transmission",
+      description:
+        "Designed an enhanced bundle transport system for delay-tolerant satellite networks, focusing on reliability, priority-based forwarding, and distributed storage under extreme bandwidth and connectivity constraints.",
+      tags: ["Distributed Systems", "Networking", "Systems Engineering"],
+    },
+    {
+      id: "activism-game",
+      title: "Visual Programming & Activism",
+      description:
+        "Developed a two-part project analyzing the relationship between pop culture and activism, combining survey-based statistical analysis with a Space Invaders–inspired game illustrating how media influence can drive collective action.",
+      tags: ["Creative Coding", "Data Visualization", "Interactive Design"],
     },
   ],
+
+  // =====================
+  // Experience (concise, narrative-driven)
+  // =====================
 
   experience: [
     {
       company: "Amazon",
-      role: "Software Development Engineer Intern",
+      role: "Software Development Engineer Intern — ECS Console",
       description:
-        "Built user-facing features for the ECS Console, focusing on observability, metrics, and customer-driven design decisions.",
+        "Built user-facing features for the Elastic Container Service Console, focusing on observability, metrics, and customer-driven engineering decisions.",
     },
     {
       company: "MIT",
       role: "Music Coding Website Researcher & Developer",
       description:
-        "Developed a custom IDE for teaching students to code with music, combining audio systems, visuals, and pedagogy.",
+        "Developed a custom web-based IDE for teaching students to code with music, combining audio systems, interactive visuals, and pedagogical tooling.",
+    },
+    {
+      company: "Palmer Trinity School",
+      role: "Independent Researcher — Visual Programming & Activism",
+      description:
+        "Designed and implemented an interactive study and game exploring how pop culture and social media influence activism, collaborating with designers to create custom visuals.",
     },
   ],
 };

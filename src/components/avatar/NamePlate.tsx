@@ -2,6 +2,7 @@ import { Text } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
+import { a, SpringValue, useSpring } from "@react-spring/three";
 
 type NamePlateProps = {
   name: string;
@@ -12,20 +13,30 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { camera, clock } = useThree();
 
+  /* ---------------- Always centered above avatar ---------------- */
+  const { position } = useSpring({
+    position: [0, 1, 0.3],
+    config: { tension: 120, friction: 16 },
+  });
+
+  /* ---------------- Billboard + subtle float ---------------- */
   useFrame(() => {
     if (!groupRef.current) return;
 
-    // Always face the camera
+    // Always face camera
     groupRef.current.lookAt(camera.position);
 
-    // Subtle idle float
+    // Subtle idle float (Y offset only)
     const t = clock.getElapsedTime();
-    groupRef.current.position.y = 1 + Math.sin(t * 1.2) * 0.025;
+    groupRef.current.position.y = position.get()[1] + Math.sin(t * 1.2) * 0.025;
   });
 
   return (
-    <group ref={groupRef} position={[0, 1, 0.3]}>
-      {/* Shadow pass (depth) */}
+    <a.group
+      ref={groupRef}
+      position={position as unknown as SpringValue<[number, number, number]>}
+    >
+      {/* Shadow pass */}
       <Text
         font="/VT323-Regular.ttf"
         fontSize={0.36}
@@ -55,7 +66,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
         {name.toUpperCase()}
       </Text>
 
-      {/* HEADLINE */}
+      {/* Headline */}
       <Text
         font="/VT323-Regular.ttf"
         fontSize={0.09}
@@ -67,6 +78,6 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
       >
         {headline}
       </Text>
-    </group>
+    </a.group>
   );
 }

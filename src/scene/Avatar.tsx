@@ -1,10 +1,17 @@
-import { useRef, useLayoutEffect, useEffect } from "react";
+import React, {
+  useRef,
+  useLayoutEffect,
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import * as THREE from "three";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import type { GLTF } from "three-stdlib";
 import { a, useSpring } from "@react-spring/three";
 import avatar from "../assets/avatar.glb?url";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import type { SpringValue } from "@react-spring/core";
 
 type GLTFResult = GLTF & {
@@ -39,63 +46,88 @@ type AvatarProps = {
   mainView?: boolean;
 } & React.ComponentProps<typeof a.group>;
 
-const Avatar = ({ mainView, onAvatarClick, ...props }: AvatarProps) => {
+const AvatarInner = (
+  { mainView, onAvatarClick, ...props }: AvatarProps,
+  ref: React.ForwardedRef<THREE.Object3D>
+) => {
   const avatarRef = useRef<THREE.Group>(null);
   const { nodes, materials, animations } = useGLTF(
     avatar
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, avatarRef);
-  const { viewport } = useThree();
 
-  // Ensure the idle breathing animation always starts once the clip is available.
+  const [hovered, setHovered] = useState(false);
+
+  /* ---------------- Idle breathing animation ---------------- */
   useLayoutEffect(() => {
     const breathingAction = actions["breathing"] as THREE.AnimationAction;
     if (breathingAction) {
-      console.log("Starting breathing animation");
       breathingAction.reset();
       breathingAction.setLoop(THREE.LoopRepeat, Infinity);
       breathingAction.fadeIn(0.5).play();
-    } else {
-      console.log(
-        "Breathing action not found, available actions:",
-        Object.keys(actions)
-      );
     }
   }, [actions]);
 
-  const centerX = 0;
-  const leftHalfCenterX = -viewport.width / 4;
-
-  // subtle correction: keep true visual center on wide screens
-  const visualCenterX = -centerX * (viewport.width > 6 ? 0.02 : 0);
-
+  /* ---------------- Position animation (keep centered always) ---------------- */
   const { position } = useSpring({
-    position: mainView ? [visualCenterX, -1.2, 0] : [leftHalfCenterX, -1, 0],
+    position: mainView ? [0, -1.5, 0] : [0, -1.6, 0],
     config: { mass: 1, tension: 120, friction: 14 },
   });
 
+  /* ---------------- Hover scale ---------------- */
+  const { scale } = useSpring({
+    scale: hovered ? 1.24 : 1.2,
+    config: { tension: 180, friction: 18 },
+  });
+
+  /* ---------------- Reset rotation when returning to main view ---------------- */
   useEffect(() => {
     if (mainView && avatarRef.current) {
       avatarRef.current.rotation.set(0, 0, 0);
     }
   }, [mainView]);
 
+  /* ---------------- Close-up idle rotation ---------------- */
   useFrame((_, delta) => {
     if (!mainView && avatarRef.current) {
       avatarRef.current.rotation.y += delta * 0.6;
     }
   });
 
+  // Expose the underlying group via forwarded ref
+  useImperativeHandle(
+    ref,
+    () => avatarRef.current as unknown as THREE.Object3D,
+    [avatarRef]
+  );
+
   return (
     <a.group
       ref={avatarRef}
       {...props}
       position={position as unknown as SpringValue<[number, number, number]>}
+      scale={scale as unknown as SpringValue<number>}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        setHovered(true);
+        document.body.style.cursor = "pointer";
+      }}
+      onPointerOut={() => {
+        setHovered(false);
+        document.body.style.cursor = "default";
+      }}
       onClick={(e) => {
         e.stopPropagation();
         onAvatarClick?.();
       }}
     >
+      {/* Subtle hover illumination */}
+      <a.pointLight
+        position={[0, 1.5, 1.5]}
+        intensity={hovered ? 0.5 : 0}
+        distance={4}
+        color="#ffffff"
+      />
       <primitive object={nodes.Hips} />
       <skinnedMesh
         name="EyeLeft"
@@ -162,5 +194,7 @@ const Avatar = ({ mainView, onAvatarClick, ...props }: AvatarProps) => {
     </a.group>
   );
 };
+
+const Avatar = forwardRef<THREE.Object3D, AvatarProps>(AvatarInner);
 
 export default Avatar;
