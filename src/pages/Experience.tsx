@@ -1,5 +1,10 @@
-import Experience from "../sections/Experience";
-
 export default function ExperiencePage() {
-  return <Experience />;
+  return (
+    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-emerald-400 mb-4">Experience</h1>
+        <p className="text-slate-400">Coming soon...</p>
+      </div>
+    </div>
+  );
 }

@@ -45,12 +45,46 @@ export const profile = {
   },
 
   skills: [
-    "Machine Learning & AI",
-    "Systems Engineering",
-    "Audio Systems & DSP",
-    "Algorithms & Data Structures",
-    "Interactive / Creative Coding",
-    "Software Construction",
+    { name: "Machine Learning & AI", mastery: 95 },
+    { name: "Systems Engineering", mastery: 90 },
+    { name: "Audio Systems & DSP", mastery: 88 },
+    { name: "Algorithms & Data Structures", mastery: 92 },
+    { name: "Interactive / Creative Coding", mastery: 94 },
+    { name: "Software Construction", mastery: 91 },
+  ],
+
+  languages: [
+    { name: "Python", level: 98 },
+    { name: "C++", level: 85 },
+    { name: "TypeScript", level: 92 },
+    { name: "SQL", level: 88 },
+  ],
+
+  inventory: [
+    {
+      icon: "🧠",
+      name: "AI",
+      description: "Neural Networks & Machine Learning",
+      equipped: true,
+    },
+    {
+      icon: "💻",
+      name: "Computer",
+      description: "Full-Stack Development",
+      equipped: true,
+    },
+    {
+      icon: "🐞",
+      name: "Debugger",
+      description: "Problem Solving & Optimization",
+      equipped: true,
+    },
+    {
+      icon: "💼",
+      name: "Job",
+      description: "Seeking New Opportunities",
+      equipped: false,
+    },
   ],
 
   tools: [

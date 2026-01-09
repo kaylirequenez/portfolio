@@ -3,11 +3,10 @@ import Avatar from "./Avatar";
 import "./Scene.css";
 import { Suspense, useEffect, useState, useRef } from "react";
 import * as THREE from "three";
-import NamePlate from "../components/avatar/NamePlate";
+import NamePlate from "../layout/CenterPanel/NamePlate";
 import { profile } from "../data/profile";
-import RoleCallout from "../components/avatar/RoleCallout";
-import LeftPanel3D from "./LeftPanel3D";
-import { getAvatarMetrics, type AvatarMetrics } from "./avatarMetrics";
+import RoleCallout from "../layout/CenterPanel/RoleCallout";
+import CharacterHUDLayout from "../layout/CharacterHUDLayout";
 
 function CameraController() {
   const { camera } = useThree();
@@ -33,30 +32,10 @@ export default function AvatarScene() {
     setMainView(!mainView);
   };
   const avatarRef = useRef<THREE.Object3D>(null);
-  const PanelsHost = ({ mainView }: { mainView: boolean }) => {
-    const { camera, size } = useThree();
-    const [metrics, setMetrics] = useState<AvatarMetrics | undefined>(
-      undefined
-    );
 
-    useEffect(() => {
-      // Recompute when entering panel view and on resize
-      if (!mainView && avatarRef.current) {
-        const m = getAvatarMetrics(avatarRef.current, camera, size);
-        setMetrics(m);
-        if (m) console.log("PanelsHost: computed avatar metrics", m);
-      } else {
-        setMetrics(undefined);
-      }
-    }, [mainView, camera, size]);
-
-    if (!mainView) {
-      return <LeftPanel3D avatarMetrics={metrics} />;
-    }
-    return null;
-  };
   return (
     <div className="avatar-scene-container">
+      {!mainView && <CharacterHUDLayout />}
       <Canvas style={{ width: "100%", height: "100%", display: "block" }}>
         <DebugSize />
         <CameraController />
@@ -65,7 +44,6 @@ export default function AvatarScene() {
         <Suspense fallback={null}>
           <group>
             <NamePlate name={profile.name} headline={profile.identity.title} />
-            <PanelsHost mainView={mainView} />
             <Avatar
               ref={avatarRef}
               mainView={mainView}
