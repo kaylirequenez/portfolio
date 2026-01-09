@@ -2,9 +2,10 @@ import * as THREE from "three";
 
 export type AvatarMetrics = {
   topPx: number; // Distance from top of screen to top of avatar
-  bottomSpacePx: number; // Distance from bottom of avatar to bottom of screen
+  bottomPx: number; // Distance from top of screen to bottom of avatar
   avatarHeightPx: number; // Height of the avatar in pixels
   leftPx: number; // Distance from left edge of screen to left edge of avatar
+  rightPx: number; // Distance from right edge of screen to right edge of avatar
 };
 
 export function getAvatarMetrics(
@@ -43,8 +44,9 @@ export function getAvatarMetrics(
 
   return {
     topPx: Math.max(0, minY),
-    bottomSpacePx: Math.max(0, size.height - maxY),
+    bottomPx: Math.max(0, maxY),
     avatarHeightPx: Math.max(0, maxY - minY),
     leftPx: Math.max(0, minX),
+    rightPx: Math.max(0, maxX),
   };
 }

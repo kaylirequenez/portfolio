@@ -64,12 +64,7 @@ export default function AvatarScene() {
         <directionalLight position={[3, 5, 2]} intensity={1.2} />
         <Suspense fallback={null}>
           <group>
-            {mainView && (
-              <NamePlate
-                name={profile.name}
-                headline={profile.identity.title}
-              />
-            )}
+            <NamePlate name={profile.name} headline={profile.identity.title} />
             <PanelsHost mainView={mainView} />
             <Avatar
               ref={avatarRef}

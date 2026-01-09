@@ -5,24 +5,29 @@ import * as THREE from "three";
 import { profile } from "../data/profile";
 import type { AvatarMetrics } from "./avatarMetrics";
 
+/* ================= LAYOUT CONSTANTS ================= */
+
+const SIDE_MARGIN = 14;
+const BOTTOM_MARGIN = 14;
+
+/* ================= PANEL SECTION ================= */
+
 function PanelSection({
   children,
-  col,
+  side,
   row,
-  centered,
   avatarMetrics,
 }: {
   children: React.ReactNode;
-  col?: 0 | 1;
+  side: "left" | "right" | "bottom";
   row?: 0 | 1;
-  centered?: boolean;
   avatarMetrics?: AvatarMetrics;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const { camera, size } = useThree();
 
   useFrame(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !avatarMetrics) return;
 
     const cam = camera as THREE.PerspectiveCamera;
     const distance = 2.2;
@@ -34,55 +39,39 @@ function PanelSection({
     const pxToWorldX = widthWorld / size.width;
     const pxToWorldY = heightWorld / size.height;
 
-    // ---------------------------
-    // Define valid regions in PX
-    // ---------------------------
-
     const screenCenterPx = size.width / 2;
-    const validLeftPx = 15;
 
-    const avatarLeftPx = avatarMetrics?.leftPx ?? screenCenterPx;
-    const validRightPx = avatarLeftPx + 20;
+    let targetXPx = screenCenterPx;
+    let targetYPx =
+      size.height -
+      BOTTOM_MARGIN -
+      (size.height - avatarMetrics.bottomPx - BOTTOM_MARGIN) / 2;
 
-    let targetXPx = size.width / 4;
-    let targetYPx = size.height / 2;
+    /* ---------- HORIZONTAL ---------- */
 
-    // ---------------------------
-    // Horizontal placement
-    // ---------------------------
-
-    if (!centered && col !== undefined) {
-      const halfWidthPx = validRightPx - validLeftPx;
-      const quarterPx = halfWidthPx / 2;
-
-      targetXPx =
-        col === 0
-          ? validLeftPx + quarterPx / 2
-          : validLeftPx + quarterPx + quarterPx / 2;
+    if (side === "left") {
+      const leftRegionStart = SIDE_MARGIN;
+      const leftRegionPxs = avatarMetrics.leftPx;
+      targetXPx = leftRegionStart + leftRegionPxs / 2;
     }
 
-    // ---------------------------
-    // Vertical placement
-    // ---------------------------
-
-    if (avatarMetrics && row !== undefined && !centered) {
-      const topBandPx = avatarMetrics.topPx + avatarMetrics.avatarHeightPx / 4;
-      const bottomBandPx =
-        avatarMetrics.topPx + (3 * avatarMetrics.avatarHeightPx) / 4;
-
-      targetYPx = row === 0 ? topBandPx : bottomBandPx;
+    if (side === "right") {
+      const rightRegionEnd = size.width - SIDE_MARGIN;
+      const rightRegionPxs =
+        size.width - 2 * SIDE_MARGIN - avatarMetrics.rightPx;
+      targetXPx = rightRegionEnd - rightRegionPxs / 2;
     }
 
-    if (centered && avatarMetrics) {
-      targetYPx = avatarMetrics.topPx / 2;
-    }
+    /* ---------- VERTICAL ---------- */
 
-    // ---------------------------
-    // Convert PX → WORLD
-    // ---------------------------
+    if (row !== undefined)
+      targetYPx =
+        avatarMetrics.topPx +
+        avatarMetrics.avatarHeightPx * (row === 0 ? 0.25 : 0.75);
+
+    /* ---------- PX → WORLD ---------- */
 
     const xWorld = (targetXPx - screenCenterPx) * pxToWorldX;
-
     const yWorld = (size.height / 2 - targetYPx) * pxToWorldY;
 
     const targetPos = new THREE.Vector3(xWorld, yWorld, -distance).applyMatrix4(
@@ -90,36 +79,31 @@ function PanelSection({
     );
 
     groupRef.current.position.lerp(targetPos, 0.12);
-    groupRef.current.quaternion.slerp(cam.quaternion, 0.12);
   });
 
-  // ---------------------------
-  // Width calculation (PX only)
-  // ---------------------------
+  /* ---------- WIDTH (PX ONLY) ---------- */
 
-  const avatarLeftPx = avatarMetrics?.leftPx ?? size.width / 2;
-  const validWidthPx = avatarLeftPx;
+  let widthPx = 320;
 
-  let widthPx: number;
-
-  if (centered) {
-    widthPx = size.width / 2;
-  } else if (col !== undefined) {
-    widthPx = Math.max(validWidthPx / 2, 180);
-  } else {
-    widthPx = validWidthPx;
+  if (avatarMetrics) {
+    if (side === "left") widthPx = avatarMetrics.leftPx - SIDE_MARGIN;
+    if (side === "right")
+      widthPx = size.width - avatarMetrics.rightPx - SIDE_MARGIN;
+    if (side === "bottom") widthPx = size.width / 1.5;
   }
+
+  widthPx = Math.max(widthPx, 200);
 
   return (
     <group ref={groupRef}>
       <Html
-        transform={false}
         center
         style={{
           width: `${widthPx}px`,
           maxWidth: `${widthPx}px`,
           pointerEvents: "auto",
           overflow: "hidden",
+          transformOrigin: "center center",
         }}
       >
         {children}
@@ -139,28 +123,25 @@ function Section({
 }) {
   return (
     <div style={section}>
-      <div style={sectionTitle}>{title}</div>
+      <div style={sectionHeader}>
+        <div style={sectionRule} />
+        <div style={sectionTitle}>{title}</div>
+      </div>
       {children}
     </div>
   );
 }
 
-function Stat({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint?: string;
-}) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div style={stat} title={hint}>
+    <div style={stat}>
       <span style={statLabel}>{label}</span>
       <span>{value}</span>
     </div>
   );
 }
+
+/* ================= MAIN EXPORT ================= */
 
 export default function LeftPanel3D({
   avatarMetrics,
@@ -169,68 +150,56 @@ export default function LeftPanel3D({
 }) {
   return (
     <>
-      {/* HEADER */}
-      <PanelSection centered avatarMetrics={avatarMetrics}>
+      {/* BOTTOM BLURB */}
+      <PanelSection side="bottom" avatarMetrics={avatarMetrics}>
         <div style={block}>
-          <div style={name}>{profile.name.toUpperCase()}</div>
-          <div style={title}>{profile.identity.title}</div>
+          <div style={sectionHeaderCenter}>
+            <div style={sectionRule} />
+            <div style={sectionTitle}>BIO</div>
+          </div>
           <div style={blurb}>{profile.identity.blurb}</div>
         </div>
       </PanelSection>
 
-      <PanelSection col={0} row={0} avatarMetrics={avatarMetrics}>
+      {/* LEFT */}
+      <PanelSection side="left" row={0} avatarMetrics={avatarMetrics}>
         <Section title="ORIGIN">
-          <div style={scrollAll}>
-            <div style={linesColumn}>
-              {Object.entries(profile.origin).map(([k, v]) => (
-                <div key={k} style={lineNoWrap}>
-                  <Stat label={k.toUpperCase()} value={v} />
-                </div>
-              ))}
+          {Object.entries(profile.origin).map(([k, v]) => (
+            <div key={k} style={lineNoWrap}>
+              <Stat label={k.toUpperCase()} value={v} />
             </div>
-          </div>
+          ))}
         </Section>
       </PanelSection>
 
-      <PanelSection col={0} row={1} avatarMetrics={avatarMetrics}>
+      <PanelSection side="left" row={1} avatarMetrics={avatarMetrics}>
         <Section title="SKILLS">
-          <div style={scrollAll}>
-            <div style={linesColumn}>
-              {profile.skills.map((s) => (
-                <div key={s} style={lineNoWrap}>
-                  {s}
-                </div>
-              ))}
+          {profile.skills.map((s) => (
+            <div key={s} style={lineNoWrap}>
+              {s}
             </div>
-          </div>
+          ))}
         </Section>
       </PanelSection>
 
-      <PanelSection col={1} row={0} avatarMetrics={avatarMetrics}>
+      {/* RIGHT */}
+      <PanelSection side="right" row={0} avatarMetrics={avatarMetrics}>
         <Section title="TOOLS">
-          <div style={scrollAll}>
-            <div style={linesColumn}>
-              {profile.tools.map((t) => (
-                <div key={t} style={lineNoWrap}>
-                  {t}
-                </div>
-              ))}
+          {profile.tools.map((t) => (
+            <div key={t} style={lineNoWrap}>
+              {t}
             </div>
-          </div>
+          ))}
         </Section>
       </PanelSection>
 
-      <PanelSection col={1} row={1} avatarMetrics={avatarMetrics}>
+      <PanelSection side="right" row={1} avatarMetrics={avatarMetrics}>
         <Section title="WEAPONRY">
-          <div style={scrollAll}>
-            <div style={linesColumn}>
-              {profile.weaponry.map((w) => (
-                <div key={w} style={lineNoWrap}>
-                  {w}
-                </div>
-              ))}
+          {profile.weaponry.map((w) => (
+            <div key={w} style={lineNoWrap}>
+              {w}
             </div>
-          </div>
+          ))}
         </Section>
       </PanelSection>
     </>
@@ -244,29 +213,41 @@ const block = {
   color: "#eaf5ff",
   padding: "20px",
   textAlign: "center" as const,
-  width: "100%",
-  boxSizing: "border-box" as const,
 };
 
-const name = {
-  fontSize: "34px",
-  color: "#5EE6D6",
-  textAlign: "center" as const,
+const blurb = {
+  fontSize: "13px",
+  lineHeight: "1.4",
 };
-const title = { fontSize: "18px", color: "#8F94AA" };
-const blurb = { fontSize: "13px", lineHeight: "1.4" };
 
 const section = {
   fontFamily: "'VT323', monospace",
   color: "#eaf5ff",
   fontSize: "13px",
-  width: "100%",
+};
+
+const sectionHeader = {
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  marginBottom: "6px",
+};
+
+const sectionHeaderCenter = {
+  ...sectionHeader,
+  justifyContent: "center",
+};
+
+const sectionRule = {
+  height: "1px",
+  width: "18px",
+  background: "rgba(94, 230, 214, 0.4)",
 };
 
 const sectionTitle = {
   color: "#5EE6D6",
   fontSize: "16px",
-  marginBottom: "6px",
+  letterSpacing: "0.08em",
 };
 
 const lineNoWrap = {
@@ -279,14 +260,6 @@ const stat = {
   justifyContent: "space-between",
 };
 
-const statLabel = { color: "#8F94AA" };
-
-const scrollAll = {
-  overflowX: "auto" as const,
-  width: "100%",
-};
-
-const linesColumn = {
-  width: "100%",
-  textAlign: "center" as const,
+const statLabel = {
+  color: "#8F94AA",
 };
