@@ -1,12 +1,11 @@
 import { Canvas, useThree } from "@react-three/fiber";
-import Avatar from "./Avatar";
-import "./Scene.css";
-import { Suspense, useEffect, useState, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
 import NamePlate from "../layout/CenterPanel/NamePlate";
 import { profile } from "../data/profile";
-import RoleCallout from "../layout/CenterPanel/RoleCallout";
 import CharacterHUDLayout from "../layout/CharacterHUDLayout";
+import "../styles/avatar-scene.css";
+import Avatar from "../models/Avatar";
 
 function CameraController() {
   const { camera } = useThree();
@@ -19,38 +18,26 @@ function CameraController() {
   return null;
 }
 
-function DebugSize() {
-  const { size } = useThree();
-  useEffect(() => {
-    console.log("canvas size:", size.width, size.height);
-  }, [size]);
-  return null;
+interface CharacterDetailViewProps {
+  onBack: () => void;
 }
-export default function AvatarScene() {
-  const [mainView, setMainView] = useState(true);
-  const handleAvatarClick = () => {
-    setMainView(!mainView);
-  };
+
+export default function CharacterDetailView({
+  onBack,
+}: CharacterDetailViewProps) {
   const avatarRef = useRef<THREE.Object3D>(null);
 
   return (
     <div className="avatar-scene-container">
-      {!mainView && <CharacterHUDLayout />}
+      <CharacterHUDLayout />
       <Canvas style={{ width: "100%", height: "100%", display: "block" }}>
-        <DebugSize />
         <CameraController />
         <ambientLight intensity={0.6} />
         <directionalLight position={[3, 5, 2]} intensity={1.2} />
         <Suspense fallback={null}>
           <group>
-            <NamePlate name={profile.name} headline={profile.identity.title} />
-            <Avatar
-              ref={avatarRef}
-              mainView={mainView}
-              onAvatarClick={handleAvatarClick}
-            />
-
-            {mainView && <RoleCallout roles={profile.hero.roleFacets} />}
+            <NamePlate name={profile.name} headline={profile.title} />
+            <Avatar ref={avatarRef} mainView={false} onAvatarClick={onBack} />
           </group>
         </Suspense>
       </Canvas>

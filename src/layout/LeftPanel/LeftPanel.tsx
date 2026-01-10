@@ -6,7 +6,7 @@ import ProfileBlock from "./ProfileBlock";
 export default function LeftPanel() {
   const [typedText, setTypedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const bio = profile.identity.blurb;
+  const bio = profile.bio;
 
   useEffect(() => {
     if (currentIndex < bio.length) {

@@ -20,3 +20,57 @@ body {
     sans-serif;
   overflow: hidden; /* prevents scrollbars in main view */
 }
+
+/* Figma-style animations */
+@keyframes gridScroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(50px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(148, 163, 184, 0.5),
+      0 0 20px rgba(148, 163, 184, 0.3), 0 0 30px rgba(148, 163, 184, 0.2),
+      0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(148, 163, 184, 0.8),
+      0 0 30px rgba(148, 163, 184, 0.5), 0 0 40px rgba(148, 163, 184, 0.3),
+      0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}

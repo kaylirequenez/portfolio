@@ -36,32 +36,32 @@ export default function ProfileBlock({ bio }: { bio: string }) {
       <div className="space-y-3">
         <FileRow
           label="HOMELAND"
-          value={profile.origin.homeland}
+          value={profile.homeland}
           icon={<MapPin className="w-4 h-4" />}
         />
         <FileRow
           label="INSTITUTION"
-          value={profile.origin.institution}
+          value={profile.institution}
           icon={<GraduationCap className="w-4 h-4" />}
         />
         <FileRow
           label="DEGREE"
-          value={profile.origin.degree}
+          value={profile.degree}
           icon={<BookOpen className="w-4 h-4" />}
         />
         <FileRow
           label="MINOR"
-          value={profile.origin.minor}
+          value={profile.minor}
           icon={<BookOpen className="w-4 h-4" />}
         />
         <FileRow
           label="CLASS"
-          value={profile.origin.class}
+          value={profile.class}
           icon={<Calendar className="w-4 h-4" />}
         />
         <FileRow
           label="INTEL"
-          value={profile.origin.intel}
+          value={profile.intel}
           icon={<Brain className="w-4 h-4" />}
           highlight
         />

@@ -23,27 +23,26 @@ export type Experience = {
 };
 
 // =====================
-// Profile
+// Profile (Single Source of Truth)
 // =====================
 
 export const profile = {
+  // ─ Character Identification ─
   name: "Kayli Requenez",
+  fullName: "KAYLI REQUENEZ",
+  title: "Creative Technologist",
+  subtitle: "Machine Learning Systems Engineer",
+  bio: "Kayli is a computer scientist who designs creative applications—with a special love for interactive music systems—and engineers efficient, real-world solutions. She researches meaningful problems and builds practical, impactful systems driven by the user experience.",
 
-  identity: {
-    title: "Creative Technologist",
-    blurb:
-      "Kayli is a computer scientist who designs creative applications—with a special love for interactive music systems—and engineers efficient, real-world solutions. She researches meaningful problems and builds practical, impactful systems driven by the user experience.",
-  },
+  // ─ Origin & Education ─
+  homeland: "Miami, FL",
+  institution: "MIT",
+  degree: "Computer Science",
+  minor: "Finance",
+  class: "2026",
+  intel: "98.0%",
 
-  origin: {
-    homeland: "Miami, FL",
-    institution: "MIT",
-    degree: "Computer Science",
-    minor: "Finance",
-    class: "2026",
-    intel: "98.0%", // derived from GPA 4.8 / 5.0
-  },
-
+  // ─ Skills & Languages ─
   skills: [
     { name: "Machine Learning & AI", mastery: 95 },
     { name: "Systems Engineering", mastery: 90 },
@@ -60,6 +59,7 @@ export const profile = {
     { name: "SQL", level: 88 },
   ],
 
+  // ─ Inventory & Communication ─
   inventory: [
     {
       icon: "🧠",
@@ -115,75 +115,71 @@ export const profile = {
     },
   ],
 
-  hero: {
-    roleFacets: [
-      {
-        id: "audio-systems",
-        title: "Audio Systems Engineer",
-        description:
-          "I design musical systems that translate theory, composition, and human intuition into expressive software.",
-        highlights: [
-          "Music Theory & Composition",
-          "Audio System Design",
-          "Generative & Interactive Music",
-          "Audio–Visual Systems",
-        ],
-      },
-      {
-        id: "ml-systems",
-        title: "Machine Learning Systems Engineer",
-        description:
-          "I build and reason about machine learning systems, with a research focus on language and structured learning problems.",
-        highlights: [
-          "Machine Learning",
-          "Language & NLP Systems",
-          "Model Reasoning",
-          "Applied Research",
-        ],
-      },
-      {
-        id: "distributed-systems",
-        title: "Distributed Systems Engineer",
-        description:
-          "I design resilient systems under real-world constraints such as limited bandwidth, latency, and partial failure.",
-        highlights: [
-          "Distributed Systems",
-          "Fault Tolerance",
-          "Networked & Storage Systems",
-          "Resource-Constrained Design",
-        ],
-      },
-      {
-        id: "visual-interactive",
-        title: "Visual & Interactive Systems Designer",
-        description:
-          "I create generative visuals and interactive interfaces that make complex systems intuitive and engaging.",
-        highlights: [
-          "Three.js",
-          "p5.js",
-          "Interactive Visualization",
-          "Creative Coding",
-        ],
-      },
-      {
-        id: "user-centered",
-        title: "User-Centered Software Engineer",
-        description:
-          "I make engineering decisions grounded in real user behavior, product goals, and long-term system usability.",
-        highlights: [
-          "Product Thinking",
-          "Customer-Driven Design",
-          "Observability & Metrics",
-          "Technical Communication",
-        ],
-      },
-    ],
-  },
+  // ─ Role Facets (Hero Section) ─
+  roleFacets: [
+    {
+      id: "audio-systems",
+      title: "Audio Systems Engineer",
+      description:
+        "I design musical systems that translate theory, composition, and human intuition into expressive software.",
+      highlights: [
+        "Music Theory & Composition",
+        "Audio System Design",
+        "Generative & Interactive Music",
+        "Audio–Visual Systems",
+      ],
+    },
+    {
+      id: "ml-systems",
+      title: "Machine Learning Systems Engineer",
+      description:
+        "I build and reason about machine learning systems, with a research focus on language and structured learning problems.",
+      highlights: [
+        "Machine Learning",
+        "Language & NLP Systems",
+        "Model Reasoning",
+        "Applied Research",
+      ],
+    },
+    {
+      id: "distributed-systems",
+      title: "Distributed Systems Engineer",
+      description:
+        "I design resilient systems under real-world constraints such as limited bandwidth, latency, and partial failure.",
+      highlights: [
+        "Distributed Systems",
+        "Fault Tolerance",
+        "Networked & Storage Systems",
+        "Resource-Constrained Design",
+      ],
+    },
+    {
+      id: "visual-interactive",
+      title: "Visual & Interactive Systems Designer",
+      description:
+        "I create generative visuals and interactive interfaces that make complex systems intuitive and engaging.",
+      highlights: [
+        "Three.js",
+        "p5.js",
+        "Interactive Visualization",
+        "Creative Coding",
+      ],
+    },
+    {
+      id: "user-centered",
+      title: "User-Centered Software Engineer",
+      description:
+        "I make engineering decisions grounded in real user behavior, product goals, and long-term system usability.",
+      highlights: [
+        "Product Thinking",
+        "Customer-Driven Design",
+        "Observability & Metrics",
+        "Technical Communication",
+      ],
+    },
+  ],
 
-  // =====================
-  // Projects (canonical list)
-  // =====================
-
+  // ─ Projects ─
   projects: [
     {
       id: "synthetic-languages",
@@ -215,10 +211,7 @@ export const profile = {
     },
   ],
 
-  // =====================
-  // Experience (concise, narrative-driven)
-  // =====================
-
+  // ─ Experience ─
   experience: [
     {
       company: "Amazon",
