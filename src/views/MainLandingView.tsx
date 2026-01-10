@@ -1,8 +1,8 @@
 import { Canvas, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useRef } from "react";
 import * as THREE from "three";
-import NamePlate from "../layout/CenterPanel/NamePlate";
-import RoleCallout from "../layout/CenterPanel/RoleCallout";
+import NamePlate from "./MainLanding/NamePlate";
+import RoleCallout from "./MainLanding/RoleCallout";
 import { profile } from "../data/profile";
 import "../styles/avatar-scene.css";
 import Avatar from "../models/Avatar";

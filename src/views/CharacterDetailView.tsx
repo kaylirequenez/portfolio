@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { CharacterFile } from "../layout/LeftPanel/CharacterFile";
 import { profile } from "../data/profile";
-import StatusBadge from "./StatusBadge";
-import DialogueWheel from "./DialogueWheel";
-import CollapsibleSection from "./CollapsibleSection";
-import SkillBar from "./SkillBar";
-import LanguageChip from "./LanguageChip";
-import InventorySlot from "../layout/InventoryPanel/InventorySlot";
+import StatusBadge from "./CharacterDetail/StatusBadge";
+import DialogueWheel from "./CharacterDetail/DialogueWheel";
+import CollapsibleSection from "./CharacterDetail/CollapsibleSection";
+import SkillBar from "./CharacterDetail/SkillBar";
+import LanguageChip from "./CharacterDetail/LanguageChip";
 import Slider from "react-slick";
+import InventorySlot from "./CharacterDetail/InventorySlot";
+import CharacterSheet from "./CharacterDetail/CharacterSheet";
 
 interface Skill {
   name: string;
@@ -64,7 +64,7 @@ export function CharacterDetailView() {
 
   const leftPanel = (
     <div className="flex flex-col min-h-full overflow-auto px-2 pb-4">
-      <CharacterFile />
+      <CharacterSheet />
       <div className="space-y-2 flex-shrink-0 mt-3">
         <button className="w-full bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border-2 border-cyan-400/50 rounded-lg px-4 py-2.5 text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/30 transition-all flex items-center justify-between">
           <div className="flex items-center gap-2">
