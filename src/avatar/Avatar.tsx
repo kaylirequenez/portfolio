@@ -70,13 +70,13 @@ const AvatarInner = (
 
   /* ---------------- Position animation (keep centered always) ---------------- */
   const { position } = useSpring({
-    position: [0, -1.4, 0],
+    position: mainView ? [0, -1.4, 0] : [0, 0.075, 0],
     config: { mass: 1, tension: 120, friction: 14 },
   });
 
   /* ---------------- Hover scale ---------------- */
   const { scale } = useSpring({
-    scale: hovered ? 1.24 : 1.2,
+    scale: mainView ? (hovered ? 1.24 : 1.2) : hovered ? 0.65 : 0.63,
     config: { tension: 180, friction: 18 },
   });
 

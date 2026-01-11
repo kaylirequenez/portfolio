@@ -8,6 +8,9 @@ import LanguageChip from "./CharacterDetail/LanguageChip";
 import Slider from "react-slick";
 import InventorySlot from "./CharacterDetail/InventorySlot";
 import CharacterSheet from "./CharacterDetail/CharacterSheet";
+import { Canvas } from "@react-three/fiber";
+import Avatar from "../avatar/Avatar";
+import AvatarCamera from "../avatar/AvatarCamera";
 
 interface Skill {
   name: string;
@@ -153,19 +156,18 @@ export function CharacterDetailView() {
         </div>
       </div>
 
-      <div className="relative flex items-end justify-center h-56 flex-shrink-0 cursor-pointer group">
+      <div className="relative flex items-end justify-center h-[28rem] flex-shrink-0 cursor-pointer group">
         <div className="absolute bottom-0 w-64 h-2 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full blur-sm" />
         <div className="relative h-full flex items-end justify-center">
           <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/30 via-transparent to-transparent rounded-lg blur-3xl" />
-          <img
-            src="../assets/avatar_img.png"
-            alt="Character"
-            className="relative h-full w-auto object-contain z-10 group-hover:scale-105 transition-transform"
-            style={{
-              filter: "drop-shadow(0 0 30px rgba(16, 185, 129, 0.6))",
-              maxHeight: "220px",
-            }}
-          />
+          <div className="relative z-10 w-80 h-full">
+            <Canvas camera={{ fov: 35 }}>
+              <AvatarCamera preset="detail" />
+              <ambientLight intensity={0.6} />
+              <directionalLight position={[2, 2, 2]} intensity={0.8} />
+              <Avatar mainView={false} />
+            </Canvas>
+          </div>
           <div className="absolute top-0 left-0 w-12 h-12 border-l-2 border-t-2 border-emerald-400/50 -translate-x-6 -translate-y-2" />
           <div className="absolute top-0 right-0 w-12 h-12 border-r-2 border-t-2 border-cyan-400/50 translate-x-6 -translate-y-2" />
           <div className="absolute bottom-0 left-0 w-12 h-12 border-l-2 border-b-2 border-emerald-400/50 -translate-x-6 translate-y-2" />
