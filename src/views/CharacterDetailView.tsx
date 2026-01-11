@@ -303,7 +303,11 @@ export function CharacterDetailView() {
           </div>
         )}
 
-        <div className="flex-1 overflow-hidden">
+        <div
+          className={
+            isMobile ? "flex-1 overflow-hidden" : "flex-1 overflow-y-auto"
+          }
+        >
           {isMobile ? (
             <div key="mobile-slider" className="h-full character-slider">
               <Slider ref={sliderRef} {...sliderSettings}>
