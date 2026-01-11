@@ -27,14 +27,19 @@ interface InventoryItem {
   [key: string]: unknown;
 }
 
-export function CharacterDetailView() {
+export function CharacterDetailView({ onBack }: { onBack?: () => void }) {
   const [openSections, setOpenSections] = useState<string[]>([
     "skills",
     "languages",
     "inventory",
   ]);
-  const [isMobile, setIsMobile] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 1024;
+    }
+    return false;
+  });
+  const [activeTab, setActiveTab] = useState(1); // Start at avatar tab
   const sliderRef = useRef<Slider>(null);
 
   useEffect(() => {
@@ -129,11 +134,11 @@ export function CharacterDetailView() {
             className="absolute text-2xl lg:text-4xl uppercase tracking-widest font-mono select-none"
             style={{
               fontWeight: "bold",
-              left: "3px",
-              top: "3px",
+              left: "0px",
+              top: "6px",
               letterSpacing: "0.2em",
-              color: "#064e3b",
-              WebkitTextStroke: "1px #064e3b",
+              color: "#0a3a2a",
+              opacity: 0.7,
               zIndex: 0,
             }}
           >
@@ -144,7 +149,9 @@ export function CharacterDetailView() {
             style={{
               fontWeight: "bold",
               letterSpacing: "0.2em",
-              filter: "drop-shadow(0 0 20px rgba(16, 185, 129, 0.6))",
+              textShadow:
+                "0 0 30px rgba(16, 185, 129, 1), 0 0 60px rgba(16, 185, 129, 0.6)",
+              filter: "drop-shadow(0 0 25px rgba(16, 185, 129, 0.8))",
               zIndex: 1,
             }}
           >
@@ -156,7 +163,10 @@ export function CharacterDetailView() {
         </div>
       </div>
 
-      <div className="relative flex items-end justify-center h-[28rem] flex-shrink-0 cursor-pointer group">
+      <div
+        className="relative flex items-end justify-center h-[28rem] flex-shrink-0 cursor-pointer group mt-4 lg:mt-8"
+        onClick={onBack}
+      >
         <div className="absolute bottom-0 w-64 h-2 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full blur-sm" />
         <div className="relative h-full flex items-end justify-center">
           <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/30 via-transparent to-transparent rounded-lg blur-3xl" />
