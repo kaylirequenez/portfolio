@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { profile } from "../data/profile";
 import StatusBadge from "./CharacterDetail/StatusBadge";
 import DialogueWheel from "./CharacterDetail/DialogueWheel";
@@ -31,10 +31,29 @@ export function CharacterDetailView() {
     "inventory",
   ]);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const sliderRef = useRef<Slider>(null);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+      const mobile = window.innerWidth < 1024;
+
+      setIsMobile((prev) => {
+        if (prev !== mobile) {
+          // entering mobile → snap to avatar
+          if (mobile) {
+            setActiveTab((tab) => {
+              if (tab !== 1) {
+                sliderRef.current?.slickGoTo(1);
+                return 1;
+              }
+              return tab;
+            });
+          }
+          return mobile;
+        }
+        return prev;
+      });
     };
 
     checkMobile();
@@ -50,8 +69,13 @@ export function CharacterDetailView() {
     );
   };
 
+  const handleTabChange = (index: number) => {
+    setActiveTab(index);
+    sliderRef.current?.slickGoTo(index);
+  };
+
   const sliderSettings = {
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 1,
@@ -59,8 +83,18 @@ export function CharacterDetailView() {
     arrows: false,
     swipe: true,
     touchThreshold: 10,
-    adaptiveHeight: true,
+    adaptiveHeight: false,
+    initialSlide: activeTab,
+    beforeChange: (_current: number, next: number) => {
+      setActiveTab(next);
+    },
   };
+
+  const tabs = [
+    { label: "CHARACTER", icon: "📋" },
+    { label: "AVATAR", icon: "👤" },
+    { label: "SKILLS", icon: "⚡" },
+  ];
 
   const leftPanel = (
     <div className="flex flex-col min-h-full overflow-auto px-2 pb-4">
@@ -230,30 +264,71 @@ export function CharacterDetailView() {
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes rotateAvatar { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+        
+        .character-slider .slick-slider,
+        .character-slider .slick-list,
+        .character-slider .slick-track {
+          height: 100% !important;
+        }
+        
+        .character-slider .slick-slide > div {
+          height: 100%;
+        }
+        
+        .character-slider .slick-slide > div > div {
+          height: calc(100vh - 120px);
+          overflow-y: auto;
+        }
       `}</style>
 
-      <div className="relative h-full p-4 flex items-center pt-8 pb-16">
-        {isMobile ? (
-          <div className="w-full h-full character-slider">
-            <Slider {...sliderSettings}>
-              <div>
-                <div className="h-[calc(100vh-10rem)]">{leftPanel}</div>
-              </div>
-              <div>
-                <div className="h-[calc(100vh-10rem)]">{centerPanel}</div>
-              </div>
-              <div>
-                <div className="h-[calc(100vh-10rem)]">{rightPanel}</div>
-              </div>
-            </Slider>
-          </div>
-        ) : (
-          <div className="w-full grid grid-cols-12 gap-4 h-full items-start">
-            <div className="col-span-4 h-full">{leftPanel}</div>
-            <div className="col-span-4 h-full">{centerPanel}</div>
-            <div className="col-span-4 h-full">{rightPanel}</div>
+      <div className="relative h-full flex flex-col">
+        {isMobile && (
+          <div className="flex-shrink-0 pt-6 px-4 pb-3">
+            <div className="flex gap-2 bg-slate-900/50 backdrop-blur-sm rounded-lg p-1 border border-cyan-400/30">
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleTabChange(index)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md font-mono text-xs uppercase tracking-wider transition-all ${
+                    activeTab === index
+                      ? "bg-cyan-500/30 text-cyan-300 border border-cyan-400/50 shadow-lg shadow-cyan-500/20"
+                      : "text-cyan-300/50 hover:text-cyan-300/80"
+                  }`}
+                >
+                  <span className="text-sm">{tab.icon}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         )}
+
+        <div className="flex-1 overflow-hidden">
+          {isMobile ? (
+            <div key="mobile-slider" className="h-full character-slider">
+              <Slider ref={sliderRef} {...sliderSettings}>
+                <div>
+                  <div className="px-2">{leftPanel}</div>
+                </div>
+                <div>
+                  <div className="px-2">{centerPanel}</div>
+                </div>
+                <div>
+                  <div className="px-2">{rightPanel}</div>
+                </div>
+              </Slider>
+            </div>
+          ) : (
+            <div
+              key="desktop-grid"
+              className="w-full grid grid-cols-12 gap-4 h-full items-start p-4"
+            >
+              <div className="col-span-4 h-full">{leftPanel}</div>
+              <div className="col-span-4 h-full">{centerPanel}</div>
+              <div className="col-span-4 h-full">{rightPanel}</div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
