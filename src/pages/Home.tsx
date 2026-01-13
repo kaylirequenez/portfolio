@@ -2,15 +2,25 @@ import { useState } from "react";
 import MainLandingView from "../views/MainLandingView";
 import { CharacterDetailView } from "../views/CharacterDetailView";
 import ProfileInitializing from "../views/ProfileInitializing";
+import OperationsPage from "../views/OperationsPage";
 
 export default function Home() {
-  const [view, setView] = useState<"landing" | "loading" | "detail">("landing");
+  const [view, setView] = useState<
+    "landing" | "loading" | "detail" | "operations"
+  >("landing");
 
   if (view === "landing") {
     return <MainLandingView onEnter={() => setView("loading")} />;
   } else if (view === "loading") {
     return <ProfileInitializing onComplete={() => setView("detail")} />;
+  } else if (view === "operations") {
+    return <OperationsPage onBack={() => setView("detail")} />;
   } else {
-    return <CharacterDetailView onBack={() => setView("landing")} />;
+    return (
+      <CharacterDetailView
+        onBack={() => setView("landing")}
+        onOpenOperations={() => setView("operations")}
+      />
+    );
   }
 }

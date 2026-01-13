@@ -27,7 +27,13 @@ interface InventoryItem {
   [key: string]: unknown;
 }
 
-export function CharacterDetailView({ onBack }: { onBack?: () => void }) {
+export function CharacterDetailView({
+  onBack,
+  onOpenOperations,
+}: {
+  onBack?: () => void;
+  onOpenOperations?: () => void;
+}) {
   const [openSections, setOpenSections] = useState<string[]>([
     "skills",
     "languages",
@@ -41,6 +47,7 @@ export function CharacterDetailView({ onBack }: { onBack?: () => void }) {
   });
   const [activeTab, setActiveTab] = useState(1); // Start at avatar tab
   const sliderRef = useRef<Slider>(null);
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -82,6 +89,33 @@ export function CharacterDetailView({ onBack }: { onBack?: () => void }) {
     sliderRef.current?.slickGoTo(index);
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    // Only handle horizontal scrolling (two-finger swipe on trackpad)
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 10) {
+      e.preventDefault();
+
+      // Clear existing timeout
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current);
+      }
+
+      // Debounce to avoid multiple rapid triggers
+      wheelTimeoutRef.current = setTimeout(() => {
+        if (e.deltaX > 0 && activeTab < 2) {
+          // Swipe left (move to next tab)
+          const nextTab = activeTab + 1;
+          setActiveTab(nextTab);
+          sliderRef.current?.slickGoTo(nextTab);
+        } else if (e.deltaX < 0 && activeTab > 0) {
+          // Swipe right (move to previous tab)
+          const prevTab = activeTab - 1;
+          setActiveTab(prevTab);
+          sliderRef.current?.slickGoTo(prevTab);
+        }
+      }, 50);
+    }
+  };
+
   const sliderSettings = {
     dots: false,
     infinite: false,
@@ -115,7 +149,10 @@ export function CharacterDetailView({ onBack }: { onBack?: () => void }) {
           </div>
           <span className="text-cyan-400/50">›</span>
         </button>
-        <button className="w-full bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border-2 border-cyan-400/50 rounded-lg px-4 py-2.5 text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/30 transition-all flex items-center justify-between">
+        <button
+          onClick={onOpenOperations}
+          className="w-full bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border-2 border-cyan-400/50 rounded-lg px-4 py-2.5 text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/30 transition-all flex items-center justify-between"
+        >
           <div className="flex items-center gap-2">
             <span className="text-base">⚙️</span>
             <span>Operations</span>
@@ -319,6 +356,7 @@ export function CharacterDetailView({ onBack }: { onBack?: () => void }) {
           className={
             isMobile ? "flex-1 overflow-hidden" : "flex-1 overflow-y-auto"
           }
+          onWheel={isMobile ? handleWheel : undefined}
         >
           {isMobile ? (
             <div key="mobile-slider" className="h-full character-slider">
