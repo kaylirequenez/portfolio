@@ -12,8 +12,9 @@ export default function OperationsPage({ onBack }: { onBack?: () => void }) {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("side-by-side");
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 1024);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
+  const [animationClass, setAnimationClass] = useState("");
   const sliderRef = useRef<Slider>(null);
-  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wheelTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const missions = profile.experience.map((exp) => ({
     id: exp.company.toLowerCase().replace(/\s+/g, "-"),
@@ -32,18 +33,31 @@ export default function OperationsPage({ onBack }: { onBack?: () => void }) {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      // When entering mobile view, always go to side-by-side (panel) layout
+      if (mobile && layoutMode !== "side-by-side") {
+        setLayoutMode("side-by-side");
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [layoutMode]);
 
   const handleMinimize = () => {
-    setLayoutMode((prev) => {
-      if (prev === "side-by-side") return "bottom-evidence";
-      if (prev === "bottom-evidence") return "side-by-side";
-      return prev;
-    });
+    if (layoutMode === "side-by-side") {
+      setAnimationClass("mission-minimizing");
+      setTimeout(() => {
+        setLayoutMode("bottom-evidence");
+        setAnimationClass("");
+      }, 350);
+    } else if (layoutMode === "bottom-evidence") {
+      setLayoutMode("side-by-side");
+      setAnimationClass("mission-restoring");
+      setTimeout(() => {
+        setAnimationClass("");
+      }, 500);
+    }
   };
 
   const handleMaximize = () => {
@@ -115,11 +129,37 @@ export default function OperationsPage({ onBack }: { onBack?: () => void }) {
             transform: translateY(20px);
           }
         }
+        @keyframes minimizeToCorner {
+          0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(calc(100vh - 240px)) translateX(calc(15vw)) scale(0.08);
+            opacity: 0;
+          }
+        }
+        @keyframes expandFromCorner {
+          0% {
+            transform: translateY(calc(100vh - 240px)) translateX(calc(15vw)) scale(0.08);
+            opacity: 0;
+          }
+          100% {
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+          }
+        }
         .mission-expanding {
           animation: slideInFromBottom 0.4s ease-out;
         }
         .mission-collapsing {
           animation: slideOutToBottom 0.4s ease-out;
+        }
+        .mission-minimizing {
+          animation: minimizeToCorner 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .mission-restoring {
+          animation: expandFromCorner 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
         }
       `}</style>
 
@@ -306,7 +346,9 @@ export default function OperationsPage({ onBack }: { onBack?: () => void }) {
                 // Desktop: Side-by-side layout
                 <div className="flex gap-4 min-h-0 flex-1">
                   {/* Center: Mission details */}
-                  <div className="flex-1 flex justify-center items-center min-h-0">
+                  <div
+                    className={`flex-1 flex justify-center items-center min-h-0 ${animationClass}`}
+                  >
                     {currentMission && (
                       <MissionFile
                         mission={currentMission}
@@ -319,10 +361,22 @@ export default function OperationsPage({ onBack }: { onBack?: () => void }) {
                   </div>
 
                   {/* Right: Evidence panel (equal width) */}
-                  <div className="flex-1 bg-slate-800/30 border-l border-cyan-400/20 overflow-y-auto">
+                  <div className="flex-1 bg-slate-800/30 border-l border-cyan-400/20 overflow-y-auto relative">
                     {currentMission && (
                       <EvidencePanel evidence={currentMission.evidence} />
                     )}
+
+                    {/* Mission file button in evidence panel corner - appears after animation */}
+                    {currentMission &&
+                      animationClass === "" &&
+                      layoutMode === "side-by-side" && (
+                        <button
+                          onClick={handleMinimize}
+                          className="absolute bottom-4 right-4 px-3 py-1 bg-slate-800/80 border border-cyan-400/40 rounded text-xs font-mono text-cyan-300 hover:bg-slate-700 transition-colors z-10"
+                        >
+                          MISSION FILE
+                        </button>
+                      )}
                   </div>
                 </div>
               )
@@ -339,24 +393,24 @@ export default function OperationsPage({ onBack }: { onBack?: () => void }) {
                 )}
               </div>
             ) : (
-              /* bottom-evidence - evidence full screen with mission file floating at bottom right */
+              /* bottom-evidence - evidence full screen with mission file button floating at bottom right inside evidence panel */
               <div className="flex-1 flex flex-col min-h-0 relative">
                 {/* Full screen evidence */}
-                <div className="flex-1 bg-slate-800/30 border border-cyan-400/20 overflow-y-auto">
+                <div className="flex-1 bg-slate-800/30 border border-cyan-400/20 overflow-y-auto relative">
                   {currentMission && (
                     <EvidencePanel evidence={currentMission.evidence} />
                   )}
-                </div>
 
-                {/* Mission file floating at bottom right - minimized to tiny button */}
-                {currentMission && (
-                  <button
-                    onClick={handleMinimize}
-                    className="absolute bottom-4 right-4 px-3 py-1 bg-slate-800/80 border border-cyan-400/40 rounded text-xs font-mono text-cyan-300 hover:bg-slate-700 transition-colors"
-                  >
-                    MISSION FILE
-                  </button>
-                )}
+                  {/* Mission file button floating at bottom right - inside evidence panel */}
+                  {currentMission && animationClass === "" && (
+                    <button
+                      onClick={handleMinimize}
+                      className="absolute bottom-4 right-4 px-3 py-1 bg-slate-800/80 border border-cyan-400/40 rounded text-xs font-mono text-cyan-300 hover:bg-slate-700 transition-colors z-10"
+                    >
+                      MISSION FILE
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </div>
