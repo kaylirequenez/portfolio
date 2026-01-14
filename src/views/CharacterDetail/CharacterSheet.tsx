@@ -14,14 +14,18 @@ function FileRow({
   value,
   icon,
   highlight = false,
+  tooltip,
 }: {
   label: string;
   value: string;
   icon: React.ReactNode;
   highlight?: boolean;
+  tooltip?: string;
 }) {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
-    <div className="flex items-center justify-between group">
+    <div className="flex items-center justify-between group relative">
       <div className="flex items-center gap-2">
         <div className={`${highlight ? "text-purple-400" : "text-cyan-400"}`}>
           {icon}
@@ -29,10 +33,19 @@ function FileRow({
         <span className="text-gray-500 text-xs">{label}:</span>
       </div>
       <span
-        className={`${highlight ? "text-purple-300" : "text-cyan-100"} text-xs`}
+        className={`${
+          highlight ? "text-purple-300" : "text-cyan-100"
+        } text-xs cursor-help`}
+        onMouseEnter={() => tooltip && setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
       >
         {value}
       </span>
+      {tooltip && showTooltip && (
+        <div className="absolute top-full right-0 mt-2 z-10 bg-purple-950/95 border-2 border-purple-400/60 rounded px-3 py-2 text-purple-200 text-xs whitespace-nowrap shadow-lg">
+          {tooltip}
+        </div>
+      )}
     </div>
   );
 }
@@ -115,6 +128,7 @@ export default function CharacterFile() {
               value={profile.intel}
               icon={<Brain className="w-4 h-4" />}
               highlight
+              tooltip="GPA 4.8/5 normalized"
             />
           </div>
 

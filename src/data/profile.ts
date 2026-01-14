@@ -40,7 +40,7 @@ export const profile = {
   degree: "Computer Science",
   minor: "Finance",
   class: "2026",
-  intel: "98.0%",
+  intel: "96%",
 
   // ─ Skills & Languages ─
   skills: [

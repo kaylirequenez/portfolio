@@ -46,9 +46,6 @@ export default function InventorySlot({
             style={{ animation: "pulse-glow 1s ease-in-out infinite" }}
           />
         )}
-        <div className="absolute top-0 left-0 right-0 bg-black/90 text-amber-300 text-[0.6rem] text-center py-1 rounded-t opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wide">
-          {description}
-        </div>
       </div>
       <div className="text-amber-300 text-[0.65rem] uppercase tracking-wider font-mono text-center">
         {name}
