@@ -1,28 +1,12 @@
+import type { ExperienceData } from "../../types/profile.types";
+
 interface MissionFileProps {
-  mission: {
-    id: string;
-    company: string;
-    role: string;
-    dates?: string;
-    mission: string;
-    system: string;
-    impact: string[];
-    evidence: {
-      mode: string;
-      items: Array<{
-        title: string;
-        summary: string;
-        details: string;
-      }>;
-    };
-    tools: string[];
-    takeaways: string[];
-  };
+  mission: ExperienceData;
   onClose: () => void;
   onMinimize: () => void;
   onMaximize: () => void;
   isFullScreen?: boolean;
-  isMobile?: boolean;
+  isCompactLayout?: boolean;
 }
 
 export default function MissionFile({
@@ -31,7 +15,7 @@ export default function MissionFile({
   onMinimize,
   onMaximize,
   isFullScreen = false,
-  isMobile = false,
+  isCompactLayout = false,
 }: MissionFileProps) {
   const windowClasses = isFullScreen
     ? "w-11/12 max-w-4xl h-5/6"
@@ -44,14 +28,14 @@ export default function MissionFile({
       {/* Mac-style window controls */}
       <div className="flex-shrink-0 bg-slate-800/50 border-b border-cyan-400/20 px-4 py-3 flex items-center justify-between">
         <div className="flex gap-2">
-          {!isMobile && (
+          {!isCompactLayout && (
             <button
               onClick={onClose}
               className="w-3 h-3 rounded-full bg-red-500/70 hover:bg-red-500 transition-colors"
               title="Close"
             />
           )}
-          {!isMobile && (
+          {!isCompactLayout && (
             <>
               <button
                 onClick={onMinimize}
@@ -95,7 +79,7 @@ export default function MissionFile({
             Mission
           </h3>
           <p className="text-sm text-cyan-100/80 leading-relaxed">
-            {mission.mission}
+            {mission.description}
           </p>
         </div>
 

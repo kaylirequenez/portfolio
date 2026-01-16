@@ -35,7 +35,7 @@ export default function MainLandingView({ onEnter }: MainLandingViewProps) {
           <group>
             <NamePlate name={profile.name} headline={profile.title} />
             <Avatar ref={avatarRef} mainView={true} onAvatarClick={onEnter} />
-            <RoleCallout roles={profile.roleFacets} />
+            <RoleCallout roles={profile.roles} />
           </group>
         </Suspense>
       </Canvas>

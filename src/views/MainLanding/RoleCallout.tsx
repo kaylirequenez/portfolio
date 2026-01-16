@@ -2,10 +2,8 @@ import { Text } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import type { RoleFacet } from "../../data/profile";
-
 type RoleCalloutProps = {
-  roles: RoleFacet[];
+  roles: string[];
 };
 
 // seconds
@@ -79,7 +77,7 @@ export default function RoleCallout({ roles }: RoleCalloutProps) {
         material-transparent
         material-opacity={0}
       >
-        {roles[index].title}
+        {roles[index]}
       </Text>
     </group>
   );

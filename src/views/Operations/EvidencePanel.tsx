@@ -10,7 +10,6 @@ interface EvidenceItem {
 
 interface EvidencePanelProps {
   evidence: {
-    mode: string;
     items: EvidenceItem[];
   };
   horizontal?: boolean;

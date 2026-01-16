@@ -1,35 +1,12 @@
 // =====================
-// Types
-// =====================
-
-export type RoleFacet = {
-  id: string;
-  title: string;
-  description: string;
-  highlights: string[];
-};
-
-export type Project = {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-};
-
-export type Experience = {
-  company: string;
-  role: string;
-  description: string;
-};
-
-// =====================
 // Profile (Single Source of Truth)
 // =====================
 
-export const profile = {
+import type { ProfileData } from "../types/profile.types";
+
+export const profile: ProfileData = {
   // ─ Character Identification ─
   name: "Kayli Requenez",
-  fullName: "KAYLI REQUENEZ",
   title: "Creative Technologist",
   subtitle: "Machine Learning Systems Engineer",
   bio: "Kayli is a computer scientist who designs creative applications—with a special love for interactive music systems—and engineers efficient, real-world solutions. She researches meaningful problems and builds practical, impactful systems driven by the user experience.",
@@ -64,25 +41,21 @@ export const profile = {
     {
       icon: "🧠",
       name: "AI",
-      description: "Neural Networks & Machine Learning",
       equipped: true,
     },
     {
       icon: "💻",
       name: "Computer",
-      description: "Full-Stack Development",
       equipped: true,
     },
     {
       icon: "🐞",
       name: "Debugger",
-      description: "Problem Solving & Optimization",
       equipped: true,
     },
     {
       icon: "💼",
       name: "Job",
-      description: "Seeking New Opportunities",
       equipped: false,
     },
   ],
@@ -99,125 +72,254 @@ export const profile = {
 
   comms: [
     {
-      label: "SEND TRANSMISSION",
       action: "email",
       value: "mailto:kayli195@mit.edu",
     },
     {
-      label: "ACCESS REPOSITORY",
       action: "github",
       value: "https://github.com/kaylirequenez",
     },
     {
-      label: "OPEN NETWORK PROFILE",
       action: "linkedin",
       value: "https://linkedin.com/in/kaylirequenez",
     },
   ],
 
-  // ─ Role Facets (Hero Section) ─
-  roleFacets: [
-    {
-      id: "audio-systems",
-      title: "Audio Systems Engineer",
-      description:
-        "I design musical systems that translate theory, composition, and human intuition into expressive software.",
-      highlights: [
-        "Music Theory & Composition",
-        "Audio System Design",
-        "Generative & Interactive Music",
-        "Audio–Visual Systems",
-      ],
-    },
-    {
-      id: "ml-systems",
-      title: "Machine Learning Systems Engineer",
-      description:
-        "I build and reason about machine learning systems, with a research focus on language and structured learning problems.",
-      highlights: [
-        "Machine Learning",
-        "Language & NLP Systems",
-        "Model Reasoning",
-        "Applied Research",
-      ],
-    },
-    {
-      id: "distributed-systems",
-      title: "Distributed Systems Engineer",
-      description:
-        "I design resilient systems under real-world constraints such as limited bandwidth, latency, and partial failure.",
-      highlights: [
-        "Distributed Systems",
-        "Fault Tolerance",
-        "Networked & Storage Systems",
-        "Resource-Constrained Design",
-      ],
-    },
-    {
-      id: "visual-interactive",
-      title: "Visual & Interactive Systems Designer",
-      description:
-        "I create generative visuals and interactive interfaces that make complex systems intuitive and engaging.",
-      highlights: [
-        "Three.js",
-        "p5.js",
-        "Interactive Visualization",
-        "Creative Coding",
-      ],
-    },
-    {
-      id: "user-centered",
-      title: "User-Centered Software Engineer",
-      description:
-        "I make engineering decisions grounded in real user behavior, product goals, and long-term system usability.",
-      highlights: [
-        "Product Thinking",
-        "Customer-Driven Design",
-        "Observability & Metrics",
-        "Technical Communication",
-      ],
-    },
+  // ─ Roles (Hero Section) ─
+  roles: [
+    "Audio Systems Engineer",
+    "Machine Learning Systems Engineer",
+    "Distributed Systems Engineer",
+    "Visual & Interactive Systems Designer",
+    "User-Centered Software Engineer",
   ],
 
   // ─ Projects ─
   projects: [
     {
-      id: "synthetic-languages",
-      title: "Synthetic Languages for Low-Resource LLM Transfer",
-      description:
-        "Designed and implemented a deterministic pipeline for generating synthetic natural languages under strict typological and morphological constraints to improve cross-lingual transfer in low-resource settings.",
-      tags: ["Machine Learning", "NLP", "Research"],
-    },
-    {
       id: "squawk-farm",
-      title: "Squawk-Farm: Generative Music Garden Game",
+      title: "Squawk Farm",
+      role: "System Architect & Audio Engine Developer",
+      dates: "Nov. – Dec. 2025",
       description:
-        "Built an interactive audio-visual game where recorded voice samples generate musical creatures that perform in synchronized harmony, combining generative music systems with playful interaction.",
-      tags: ["Audio Systems", "Generative Music", "Creative Coding"],
+        "Squawk Farm is a constraint-guided interactive music system that transforms user-recorded sounds into animated musical creatures performing together within a shared rhythmic and harmonic structure. The system emphasizes playful exploration while enforcing timing and pitch constraints that preserve musical coherence for novice users.",
+      system:
+        "A Python-based interactive music system built with Kivy, featuring a pulse-based global timing grid, symbolic audio loop sequencing, beat template generation and scoring, harmonic role assignment, and an event-driven audio scheduler fully decoupled from visual rendering.",
+      impact: [
+        "Enabled novice users to create rhythmically and harmonically coherent compositions without formal music training",
+        "Designed a scalable loop engine supporting quantized recording, symbolic sequencing, role-aware rhythm generation, and harmonic transposition at playback time",
+        "Integrated recorded audio with symbolic sequencing to combine the expressiveness of samples with MIDI-style editability",
+        "Maintained musical stability through constrained pitch selection, beat template scoring, and global timing guarantees",
+        "Architected the system to support future extensions including alternative meters, dynamic tempo changes, additional scales, and persistent project saving",
+      ],
+      evidence: {
+        items: [
+          {
+            title: "Quantized Audio Recording Pipeline",
+            summary:
+              "Streamed recording interface converting raw audio into rhythmically aligned loops.",
+            details:
+              "Implemented a rolling-buffer recording system with live waveform visualization and draggable loop selection. Recordings are mapped to musically valid loop lengths and processed with pitch correction, normalization, and fade smoothing to ensure clean looping.",
+            image: "/src/assets/squawkfarm/recording.png",
+          },
+          {
+            title: "Symbolic Loop Sequencer",
+            summary:
+              "Grid-based editor for rhythmic and melodic control of each creature.",
+            details:
+              "Each animal owns a symbolic AudioLoop mapping quantized time slots to pitch values. Users can add, delete, and reposition notes, shift octaves, and explore auto-generated beat templates while remaining synchronized to global transport.",
+            image: "/src/assets/squawkfarm/sequencer.png",
+          },
+          {
+            title: "Beat Templates & Harmonic Roles",
+            summary: "Context-aware rhythm and harmony generation.",
+            details:
+              "Designed a beat template system that generates and scores rhythmic patterns based on role, loop length, and ensemble density. Animals are assigned harmonic roles, with pitch constrained to a pentatonic scale and applied via transposition at playback time.",
+            image: "/src/assets/squawkfarm/harmony.png",
+          },
+        ],
+      },
+      tools: [
+        "Python",
+        "Kivy",
+        "Digital Signal Processing",
+        "Audio Scheduling",
+        "Symbolic Sequencing",
+        "Music Theory",
+      ],
+      takeaways: [
+        "Designing constraint-guided creative systems",
+        "Separating symbolic musical structure from raw audio data",
+        "Building scalable timing architectures for interactive audio",
+      ],
+      collaborators: ["Maxine Perroni-Scharf", "Raymond Brookman"],
+      links: [
+        {
+          label: "System Design Paper",
+          url: "/docs/Squawk_Farm.pdf",
+        },
+      ],
     },
     {
-      id: "SNORT",
-      title: "SNORT: SolarNet Optimized Routing Transmission",
+      id: "spice",
+      title: "SPICE",
+      subtitle: "Synthetic Polyglot Injection for Cross-lingual Evaluation",
+      role: "Research Contributor — Synthetic Language Generation",
+      dates: "Nov. – Dec. 2025",
       description:
-        "Designed an enhanced bundle transport system for delay-tolerant satellite networks, focusing on reliability, priority-based forwarding, and distributed storage under extreme bandwidth and connectivity constraints.",
-      tags: ["Distributed Systems", "Networking", "Systems Engineering"],
+        "SPICE is a research pipeline for evaluating whether synthetic languages can substitute for or augment low-resource training data in multilingual NLP. The project introduces a stabilized synthetic language generation and translation system that enables controlled experiments on typological similarity and cross-lingual transfer.",
+      system:
+        "A Python-based research pipeline combining deterministic synthetic language generation, corpus-scale translation with lexicon validation, and multilingual fine-tuning with HuggingFace Transformers, PEFT, and bitsandbytes quantization for controlled cross-lingual transfer experiments.",
+      impact: [
+        "Designed a deterministic synthetic language generation pipeline with fixed orthography, typological feature vectors, and affix inventories",
+        "Implemented corpus-scale English-to-synthetic translation with strict lexicon control and conflict detection",
+        "Prevented grammatical drift through validation and controlled lexicon growth across translation batches",
+        "Enabled experiments isolating typological similarity as a factor in multilingual transfer performance",
+      ],
+      evidence: {
+        items: [
+          {
+            title: "Synthetic Language Pipeline",
+            summary: "Typology-controlled synthetic language generation.",
+            details:
+              "Designed the pipeline for generating stable constructed languages under strict orthographic and morphological constraints, ensuring consistency across hundreds of translated examples.",
+            image: "/src/assets/spice/typology_pipeline.png",
+          },
+          {
+            title: "Controlled Translation Workflow",
+            summary:
+              "Deterministic dataset translation with lexicon validation.",
+            details:
+              "Implemented translation batching, vocabulary reuse enforcement, and conflict detection to maintain corpus-scale consistency for multilingual fine-tuning.",
+            image: "/src/assets/spice/translation_prompt.png",
+          },
+        ],
+      },
+      tools: [
+        "Python",
+        "HuggingFace Transformers",
+        "Datasets (HuggingFace)",
+        "PyTorch",
+        "PEFT / LoRA / QLoRA",
+        "Accelerate",
+        "bitsandbytes",
+        "OmegaConf",
+        "Weights & Biases",
+      ],
+      takeaways: [
+        "Building deterministic synthetic data pipelines for multilingual NLP",
+        "Isolating typological similarity as a transfer mechanism",
+        "Balancing data quality, scalability, and compute constraints",
+      ],
+      collaborators: ["Angela Chen", "Kat Dou", "Joel Manu"],
+      links: [
+        {
+          label: "Research Paper (PDF)",
+          url: "/docs/SPICE.pdf",
+        },
+      ],
     },
+
     {
-      id: "activism-game",
-      title: "Visual Programming & Activism",
+      id: "snort",
+      title: "SNORT",
+      subtitle: "SolarNet Optimized Routing Transmission",
+      role: "Research Contributor",
+      dates: "Mar. – May 2025",
       description:
-        "Developed a two-part project analyzing the relationship between pop culture and activism, combining survey-based statistical analysis with a Space Invaders–inspired game illustrating how media influence can drive collective action.",
-      tags: ["Creative Coding", "Data Visualization", "Interactive Design"],
+        "SNORT is a design-only distributed routing and storage protocol for NASA’s SolarNet, an interplanetary delay-tolerant communication network. The system extends the Bundle Protocol with storage-aware forwarding, reservation-based transmission, redundancy, and confirmation-driven cleanup to improve reliability under extreme delays and intermittent connectivity.",
+      system:
+        "A distributed routing and storage protocol extending the Bundle Protocol with reservation-based storage mechanisms, storage-aware forwarding logic, redundancy strategies, and confirmation-driven reliability for delay-tolerant interplanetary networks.",
+      impact: [
+        "Designed a reservation-based distributed storage mechanism to prevent bundle loss",
+        "Extended the Bundle Protocol with storage-aware forwarding and confirmation-driven reliability",
+        "Analyzed tradeoffs between latency, redundancy, storage pressure, and network overhead",
+        "Evaluated failure scenarios including deep-space delays and concurrent high-priority traffic",
+      ],
+      evidence: {
+        items: [
+          {
+            title: "System Architecture",
+            summary: "High-level protocol architecture for SNORT.",
+            details:
+              "Illustrates how storage reservation, forwarding logic, and confirmation signals interact within the SolarNet environment.",
+            image: "/assets/snort/architecture.png",
+          },
+        ],
+      },
+      tools: [
+        "Distributed Systems Design",
+        "Delay-Tolerant Networking (DTN)",
+        "Bundle Protocol",
+        "Protocol Architecture",
+      ],
+      takeaways: [
+        "Designing reliable systems for extreme network conditions",
+        "Reasoning about correctness without implementation",
+      ],
+      collaborators: ["Cameron Holt", "Jennifer Kim"],
+      links: [
+        {
+          label: "Design Paper (PDF)",
+          url: "/assets/docs/SNORT.pdf",
+        },
+      ],
+    },
+
+    {
+      id: "pop-culture-activism",
+      title: "Pop Culture and Activism",
+      subtitle: "Behavioral Study + Interactive Game System",
+      role: "Research Lead & Interactive Systems Developer",
+      dates: "Apr. – May 2021",
+      description:
+        "This project studies how pop culture, social pressure, and personal reasoning influence engagement in social and environmental activism. A behavioral survey and an educational arcade-style game were used to collect data, analyze motivation patterns, and visualize their real-world impact through gameplay.",
+      system:
+        "An interactive system combining a behavioral survey instrument, weighted scoring model for influence classification, and a p5.js-based arcade game that translates environmental actions into gameplay mechanics for educational reinforcement.",
+      impact: [
+        "Designed a behavioral survey measuring celebrity influence, peer pressure, and self-driven logic",
+        "Developed a weighted scoring model to classify influence patterns and outcomes",
+        "Built an interactive arcade game translating environmental actions into gameplay mechanics",
+        "Integrated data visualization and game systems to reinforce educational outcomes",
+      ],
+      evidence: {
+        items: [
+          {
+            title: "Survey & Data Analysis",
+            summary: "Behavioral data collection and visualization.",
+            details:
+              "Survey responses were categorized and visualized to compare individual behavior against aggregate trends across influence types.",
+            image: "/assets/pop-culture/data.png",
+          },
+          {
+            title: "Educational Arcade Game",
+            summary:
+              "Gameplay mechanics representing environmental decision-making.",
+            details:
+              "A Space-Invaders-style game where environmental actions function as upgrades, directly influencing difficulty and progression.",
+            image: "/assets/pop-culture/gameplay.png",
+          },
+        ],
+      },
+      tools: ["JavaScript (ES6+)", "p5.js", "HTML5", "CSS3"],
+      takeaways: [
+        "Connecting behavioral research with interactive design",
+        "Using games as tools for data collection and education",
+        "Visualizing complex social dynamics through interactive feedback",
+      ],
     },
   ],
 
   // ─ Experience ─
   experience: [
     {
+      id: "amazon",
       company: "Amazon",
+      location: "Jersey City, NJ",
       role: "Software Development Engineer Intern — ECS Console",
+      team: "Elastic Container Service (ECS) Console",
       dates: "Jun. – Aug. 2025",
-      mission:
+      description:
         "Improve production observability in the ECS Console by integrating CloudWatch metrics directly into customer workflows.",
       system:
         "AWS ECS Console frontend integrated with CloudWatch dashboards, metric math, query-based metrics, and test infrastructure across cluster, service, task, and container levels.",
@@ -229,7 +331,6 @@ export const profile = {
         "Refactored legacy observability-related code and resolved pre-existing integration test failures.",
       ],
       evidence: {
-        mode: "carousel",
         items: [
           {
             title: "Metric Source Configuration",
@@ -267,10 +368,12 @@ export const profile = {
       ],
     },
     {
+      id: "mit-urop",
       company: "MIT",
+      location: "Cambridge, MA",
       role: "Music Coding Website Researcher & Developer (UROP)",
       dates: "Jul. – Dec. 2023",
-      mission:
+      description:
         "Build an open, browser-based platform that teaches music technology through code, replacing proprietary tools with an interactive, visual programming environment.",
       system:
         "A React-based web IDE integrating the Web Audio API, Tone.js, CodeMirror, Acorn AST parsing, and a custom p5.js visualization layer for real-time audio and visual programming.",
@@ -282,7 +385,6 @@ export const profile = {
         "Iterated on the platform based on classroom feedback and GitHub issues to improve usability and pedagogy.",
       ],
       evidence: {
-        mode: "carousel",
         items: [
           {
             title: "Interactive Sequencer Example",
@@ -334,6 +436,12 @@ export const profile = {
         "Abstracting real-time audio systems into approachable APIs",
         "Bridging sound, visuals, and code in an educational context",
         "Building maintainable, open-source educational software",
+      ],
+      links: [
+        {
+          label: "Deployed Website",
+          url: "https://ianhattwick.com/m080/",
+        },
       ],
     },
   ],

@@ -1,55 +1,71 @@
 import { useState } from "react";
+import type { Comm } from "../../../types/profile.types";
+import useHasHover from "../../../hooks/useHasHover";
 
-interface CommsItem {
-  value: string;
-  action: string;
-}
-
-function DialogueWheel({ comms }: { comms: CommsItem[] }) {
+function DialogueWheel({ comms }: { comms: Comm[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const wheelOptions = [
-    {
-      icon: "📧",
-      label: "EMAIL",
+  const hasHover = useHasHover();
+  const isTouchOnly = !hasHover;
+
+  const actionConfig: Record<
+    string,
+    { icon: string; label: string; color: string }
+  > = {
+    email: { icon: "📧", label: "EMAIL", color: "#10b981" },
+    github: { icon: "🔗", label: "GITHUB", color: "#10b981" },
+    linkedin: { icon: "🌐", label: "LINKEDIN", color: "#10b981" },
+  };
+
+  const angleByIndex = [-90, 150, 30];
+
+  const wheelOptions = comms.map((comm, index) => {
+    const base = actionConfig[comm.action] ?? {
+      icon: "💬",
+      label: comm.value,
       color: "#10b981",
-      angle: -90,
-    },
-    {
-      icon: "🔗",
-      label: "GITHUB",
-      color: "#10b981",
-      angle: 150,
-    },
-    {
-      icon: "🌐",
-      label: "LINKEDIN",
-      color: "#10b981",
-      angle: 30,
-    },
-  ];
+    };
+    return {
+      ...base,
+      angle: angleByIndex[index] ?? -90 + index * 120,
+    };
+  });
 
   const handleOptionClick = (e: React.MouseEvent, index: number) => {
-    // On mobile (touch), first tap selects and shows label, second tap navigates
-    if (selectedIndex === index) {
-      // Second tap - allow navigation
+    if (!isTouchOnly) {
+      // Desktop / hover-capable: navigate immediately
       return;
-    } else {
-      // First tap - prevent navigation and show label
-      e.preventDefault();
-      setSelectedIndex(index);
     }
+
+    // Touch-only: two-tap behavior
+    if (selectedIndex === index) {
+      return;
+    }
+
+    e.preventDefault();
+    setSelectedIndex(index);
   };
 
   const showLabel = (index: number) => {
-    return hoveredIndex === index || selectedIndex === index;
+    if (hasHover) {
+      return hoveredIndex === index;
+    }
+    return selectedIndex === index;
   };
 
   return (
     <div className="relative w-full flex flex-col items-center gap-3">
-      <button onClick={() => setIsOpen(!isOpen)} className="relative group">
+      {/* Toggle button */}
+      <button
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setHoveredIndex(null);
+          setSelectedIndex(null);
+        }}
+        className="relative group"
+      >
         <div
           className="absolute -inset-3 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full blur-xl"
           style={{ opacity: isOpen ? 1 : 0.5 }}
@@ -79,8 +95,10 @@ function DialogueWheel({ comms }: { comms: CommsItem[] }) {
         </div>
       </button>
 
+      {/* Wheel */}
       {isOpen && (
         <div className="relative w-72 h-72">
+          {/* Center hub */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border-2 border-green-400/30 bg-black/60 flex items-center justify-center z-10">
             <div className="text-2xl">💬</div>
           </div>
@@ -101,15 +119,19 @@ function DialogueWheel({ comms }: { comms: CommsItem[] }) {
                     ? "noopener noreferrer"
                     : undefined
                 }
-                className="absolute top-1/2 left-1/2 group"
+                className="absolute top-1/2 left-1/2"
                 style={{
                   transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
                 }}
                 onClick={(e) => handleOptionClick(e, i)}
-                onMouseEnter={() => setHoveredIndex(i)}
-                onMouseLeave={() => setHoveredIndex(null)}
+                onMouseEnter={() => {
+                  if (hasHover) setHoveredIndex(i);
+                }}
+                onMouseLeave={() => {
+                  if (hasHover) setHoveredIndex(null);
+                }}
               >
-                {/* Glow effect when selected or hovered */}
+                {/* Glow */}
                 {showLabel(i) && (
                   <div
                     className="absolute -inset-4 rounded-full blur-xl opacity-60"
@@ -120,6 +142,7 @@ function DialogueWheel({ comms }: { comms: CommsItem[] }) {
                   />
                 )}
 
+                {/* Icon */}
                 <div
                   className="relative bg-black/80 backdrop-blur-sm border-2 rounded-full p-4 transition-all"
                   style={{
@@ -147,7 +170,7 @@ function DialogueWheel({ comms }: { comms: CommsItem[] }) {
                   </div>
                 </div>
 
-                {/* Label - shown on hover (desktop) or tap (mobile) */}
+                {/* Label */}
                 <div
                   className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap transition-all duration-300"
                   style={{
@@ -171,12 +194,10 @@ function DialogueWheel({ comms }: { comms: CommsItem[] }) {
                     >
                       {option.label}
                     </span>
-                    {/* Show "Tap again" hint only on selected (not hovered) */}
-                    {selectedIndex === i && hoveredIndex !== i && (
-                      <div
-                        className="text-[0.55rem] text-center mt-0.5 opacity-75"
-                        style={{ color: option.color }}
-                      >
+
+                    {/* Mobile hint */}
+                    {isTouchOnly && selectedIndex === i && (
+                      <div className="text-[0.55rem] text-center mt-0.5 opacity-75">
                         Tap again to open
                       </div>
                     )}
@@ -190,4 +211,5 @@ function DialogueWheel({ comms }: { comms: CommsItem[] }) {
     </div>
   );
 }
+
 export default DialogueWheel;

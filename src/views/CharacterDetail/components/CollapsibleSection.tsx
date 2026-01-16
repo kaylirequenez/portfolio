@@ -1,15 +1,16 @@
+interface CollapsibleSectionProps {
+  title: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}
+
 function CollapsibleSection({
   title,
   isOpen,
   onToggle,
   children,
-}: {
-  title: string;
-  isOpen: boolean;
-  onToggle: () => void;
-  color: "cyan";
-  children: React.ReactNode;
-}) {
+}: CollapsibleSectionProps) {
   return (
     <div className="bg-black/60 backdrop-blur-sm border-2 border-cyan-400/50 rounded-lg shadow-[0_0_20px_rgba(34,211,238,0.3)] overflow-hidden">
       <button

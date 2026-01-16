@@ -1,21 +1,21 @@
-interface InventorySlotProps {
-  icon: string;
-  name: string;
-  description: string;
-  equipped: boolean;
+import type { InventoryItem } from "../../../types/profile.types";
+
+interface InventorySlotProps extends InventoryItem {
   index: number;
 }
 
 export default function InventorySlot({
   icon,
   name,
-  description,
   equipped,
   index,
 }: InventorySlotProps) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div
+        role="button"
+        aria-pressed={equipped}
+        tabIndex={0}
         className={`relative w-20 h-20 bg-black/80 border-2 ${
           equipped ? "border-amber-400" : "border-gray-600"
         } rounded-lg flex items-center justify-center cursor-pointer hover:border-amber-300 transition-all group`}
@@ -30,6 +30,7 @@ export default function InventorySlot({
             style={{ animation: "pulse-glow 2s ease-in-out infinite" }}
           />
         )}
+
         <div
           className="text-4xl relative z-10"
           style={{
@@ -40,6 +41,7 @@ export default function InventorySlot({
         >
           {icon}
         </div>
+
         {equipped && (
           <div
             className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-green-300 rounded-full"
@@ -47,6 +49,7 @@ export default function InventorySlot({
           />
         )}
       </div>
+
       <div className="text-amber-300 text-[0.65rem] uppercase tracking-wider font-mono text-center">
         {name}
       </div>
