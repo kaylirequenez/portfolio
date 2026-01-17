@@ -1,9 +1,9 @@
 import { useState } from "react";
-import ArchivesPage from "./views/ArchivesPage";
-import MainLandingView from "./views/MainLandingView";
-import OperationsPage from "./views/OperationsPage";
 import ProfileInitializing from "./views/ProfileInitializing";
 import CharacterDetailView from "./views/CharacterDetail/CharacterDetailView";
+import MainLandingView from "./views/MainLanding/MainLandingView";
+import ArchivesView from "./views/CharacterHistory/ArchivesView";
+import OperationsView from "./views/CharacterHistory/OperationsView";
 
 export default function App() {
   const [view, setView] = useState<
@@ -27,24 +27,10 @@ export default function App() {
     return <ProfileInitializing onComplete={() => setView("detail")} />;
   }
   if (view === "operations") {
-    return (
-      <OperationsPage
-        onBack={() => {
-          setDetailTab(0);
-          setView("detail");
-        }}
-      />
-    );
+    return <OperationsView onBack={() => setView("detail")} />;
   }
   if (view === "archives") {
-    return (
-      <ArchivesPage
-        onBack={() => {
-          setDetailTab(0);
-          setView("detail");
-        }}
-      />
-    );
+    return <ArchivesView onBack={() => setView("detail")} />;
   }
   return (
     <CharacterDetailView
@@ -53,9 +39,11 @@ export default function App() {
       setBioTypedIndex={setBioTypedIndex}
       onBack={() => setView("landing")}
       onOpenOperations={() => {
+        setDetailTab(0);
         setView("operations");
       }}
       onOpenArchives={() => {
+        setDetailTab(0);
         setView("archives");
       }}
     />

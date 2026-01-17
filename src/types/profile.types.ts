@@ -84,6 +84,13 @@ export interface ProjectData extends Data {
 
 export type DataItem = ExperienceData | ProjectData;
 
+export interface MainDataInfo {
+  id: string;
+  header: string; // company - role or title
+  role: string;
+  dates: string;
+}
+
 // ─────────────────────────────────────────────────────
 // Character/Profile Types
 // ─────────────────────────────────────────────────────

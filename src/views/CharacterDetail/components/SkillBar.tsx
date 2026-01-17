@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Skill } from "../../../types/profile.types";
 
-function SkillBar({ name, mastery }: Skill) {
+export default function SkillBar({ name, mastery }: Skill) {
   const [width, setWidth] = useState(0);
   const safeMastery = Math.max(0, Math.min(100, mastery));
 
@@ -25,5 +25,3 @@ function SkillBar({ name, mastery }: Skill) {
     </div>
   );
 }
-
-export default SkillBar;

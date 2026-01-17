@@ -48,11 +48,11 @@ type AvatarProps = {
 
 const AvatarInner = (
   { mainView, onAvatarClick, ...props }: AvatarProps,
-  ref: React.ForwardedRef<THREE.Object3D>
+  ref: React.ForwardedRef<THREE.Object3D>,
 ) => {
   const avatarRef = useRef<THREE.Group>(null);
   const { nodes, materials, animations } = useGLTF(
-    avatar
+    avatar,
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, avatarRef);
 
@@ -98,7 +98,7 @@ const AvatarInner = (
   useImperativeHandle(
     ref,
     () => avatarRef.current as unknown as THREE.Object3D,
-    [avatarRef]
+    [avatarRef],
   );
 
   return (
@@ -194,7 +194,6 @@ const AvatarInner = (
     </a.group>
   );
 };
+AvatarInner.displayName = "Avatar";
 
-const Avatar = forwardRef<THREE.Object3D, AvatarProps>(AvatarInner);
-
-export default Avatar;
+export default forwardRef<THREE.Object3D, AvatarProps>(AvatarInner);

@@ -12,7 +12,7 @@ export function useSwipeTabs({
   tabCount,
   enableTouch,
 }: UseSwipeTabsProps) {
-  const sliderRef = useRef<Slider>(null);
+  const sliderRef = useRef<Slider>(null as unknown as Slider);
 
   // React state mirrors Slick (never drives it)
   const [activeTab, setActiveTab] = useState(initialTab);

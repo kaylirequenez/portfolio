@@ -1,29 +1,22 @@
-import type { ExperienceData } from "../../types/profile.types";
+import type { ExperienceData, ProjectData } from "../../../types/profile.types";
 
-interface MissionFileProps {
-  mission: ExperienceData;
+interface DataFileProps {
+  header: string;
+  data: ExperienceData | ProjectData;
   onClose: () => void;
-  onMinimize: () => void;
-  onMaximize: () => void;
   isFullScreen?: boolean;
   isCompactLayout?: boolean;
 }
 
-export default function MissionFile({
-  mission,
+export default function DataFile({
+  header,
+  data,
   onClose,
-  onMinimize,
-  onMaximize,
-  isFullScreen = false,
   isCompactLayout = false,
-}: MissionFileProps) {
-  const windowClasses = isFullScreen
-    ? "w-11/12 max-w-4xl h-5/6"
-    : "w-full max-w-2xl h-full";
-
+}: DataFileProps) {
   return (
     <div
-      className={`${windowClasses} bg-gradient-to-br from-slate-900/80 via-slate-900/70 to-slate-900/80 border-2 border-cyan-400/40 rounded-lg overflow-hidden flex flex-col backdrop-blur-sm`}
+      className={`w-full max-w-2xl h-full bg-gradient-to-br from-slate-900/80 via-slate-900/70 to-slate-900/80 border-2 border-cyan-400/40 rounded-lg overflow-hidden flex flex-col backdrop-blur-sm`}
     >
       {/* Mac-style window controls */}
       <div className="flex-shrink-0 bg-slate-800/50 border-b border-cyan-400/20 px-4 py-3 flex items-center justify-between">
@@ -35,23 +28,9 @@ export default function MissionFile({
               title="Close"
             />
           )}
-          {!isCompactLayout && (
-            <>
-              <button
-                onClick={onMinimize}
-                className="w-3 h-3 rounded-full bg-yellow-500/70 hover:bg-yellow-500 transition-colors"
-                title="Minimize"
-              />
-              <button
-                onClick={onMaximize}
-                className="w-3 h-3 rounded-full bg-green-500/70 hover:bg-green-500 transition-colors"
-                title="Maximize"
-              />
-            </>
-          )}
         </div>
         <div className="text-xs font-mono text-cyan-300 uppercase tracking-wider">
-          {mission.company} — {mission.role}
+          {header}
         </div>
         <div className="w-12" /> {/* Spacer for centering */}
       </div>
@@ -61,14 +40,14 @@ export default function MissionFile({
         {/* Header */}
         <div className="space-y-2">
           <div className="text-xs font-mono text-cyan-400/70 uppercase tracking-wider">
-            {mission.company}
+            {header}
           </div>
           <h2 className="text-xl font-mono text-emerald-300 uppercase">
-            {mission.role}
+            {data.role}
           </h2>
-          {mission.dates && (
+          {data.dates && (
             <div className="text-sm font-mono text-cyan-400/60">
-              {mission.dates}
+              {data.dates}
             </div>
           )}
         </div>
@@ -79,7 +58,7 @@ export default function MissionFile({
             Mission
           </h3>
           <p className="text-sm text-cyan-100/80 leading-relaxed">
-            {mission.description}
+            {data.description}
           </p>
         </div>
 
@@ -89,7 +68,7 @@ export default function MissionFile({
             System
           </h3>
           <p className="text-sm text-cyan-100/80 leading-relaxed">
-            {mission.system}
+            {data.system}
           </p>
         </div>
 
@@ -99,7 +78,7 @@ export default function MissionFile({
             Impact
           </h3>
           <ul className="text-sm text-cyan-100/80 space-y-1">
-            {mission.impact.map((bullet, i) => (
+            {data.impact.map((bullet, i) => (
               <li key={i} className="flex gap-2">
                 <span className="text-emerald-400 flex-shrink-0">▸</span>
                 <span>{bullet}</span>
@@ -114,7 +93,7 @@ export default function MissionFile({
             Tools & Technologies
           </h3>
           <div className="flex flex-wrap gap-2">
-            {mission.tools.map((tool, i) => (
+            {data.tools.map((tool, i) => (
               <span
                 key={i}
                 className="px-2 py-1 bg-cyan-400/10 border border-cyan-400/30 rounded text-xs text-cyan-300"
@@ -131,7 +110,7 @@ export default function MissionFile({
             Key Learnings
           </h3>
           <ul className="text-sm text-cyan-100/80 space-y-1">
-            {mission.takeaways.map((takeaway, i) => (
+            {data.takeaways.map((takeaway, i) => (
               <li key={i} className="flex gap-2">
                 <span className="text-emerald-400 flex-shrink-0">✦</span>
                 <span>{takeaway}</span>
@@ -139,6 +118,48 @@ export default function MissionFile({
             ))}
           </ul>
         </div>
+
+        {/* Collaborators */}
+        {"collaborators" in data && data.collaborators && (
+          <div className="space-y-2">
+            <h3 className="text-xs font-mono uppercase tracking-wider text-cyan-300/70">
+              Collaborators
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {data.collaborators.map((person, i) => (
+                <span
+                  key={i}
+                  className="px-2 py-1 bg-cyan-400/10 border border-cyan-400/30 rounded text-xs text-cyan-300"
+                >
+                  {person}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Links */}
+        {data.links && (
+          <div className="space-y-2">
+            <h3 className="text-xs font-mono uppercase tracking-wider text-cyan-300/70">
+              Resources
+            </h3>
+            <div className="flex flex-col gap-2">
+              {data.links.map((link, i) => (
+                <a
+                  key={i}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3 py-2 bg-cyan-500/10 border border-cyan-400/30 rounded text-xs text-cyan-300 hover:bg-cyan-500/20 transition-colors w-fit"
+                >
+                  <span>🔗</span>
+                  <span>{link.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

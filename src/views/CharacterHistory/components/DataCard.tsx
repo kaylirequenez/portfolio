@@ -1,19 +1,17 @@
-interface MissionCardProps {
-  id: string;
-  company: string;
-  role: string;
-  dates?: string;
-  isSelected?: boolean;
+import type { MainDataInfo } from "../../../types/profile.types";
+
+interface DataCardProps extends MainDataInfo {
+  isSelected: boolean;
   onClick: () => void;
 }
 
-export default function MissionCard({
-  company,
+export default function DataCard({
+  header,
   role,
   dates,
   isSelected,
   onClick,
-}: MissionCardProps) {
+}: DataCardProps) {
   return (
     <button
       onClick={onClick}
@@ -24,14 +22,12 @@ export default function MissionCard({
       }`}
     >
       <div className="font-mono text-xs uppercase tracking-wider text-cyan-300/70">
-        {company}
+        {header}
       </div>
       <div className="mt-2 text-sm font-mono text-emerald-300 line-clamp-2">
         {role}
       </div>
-      {dates && (
-        <div className="mt-2 text-xs font-mono text-cyan-400/60">{dates}</div>
-      )}
+      <div className="mt-2 text-xs font-mono text-cyan-400/60">{dates}</div>
     </button>
   );
 }

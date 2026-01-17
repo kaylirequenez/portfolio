@@ -1,14 +1,20 @@
 import { useState } from "react";
 import type { Comm } from "../../../types/profile.types";
-import useHasHover from "../../../hooks/useHasHover";
+import { useInputCapabilities } from "../../../hooks/useInputCapabilities";
 
-function DialogueWheel({ comms }: { comms: Comm[] }) {
+type DialogueWheelProps = {
+  comms: Comm[];
+};
+
+export default function DialogueWheel({ comms }: DialogueWheelProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const hasHover = useHasHover();
-  const isTouchOnly = !hasHover;
+  const { hasTouch, hasFinePointer } = useInputCapabilities();
+
+  const hasHover = hasFinePointer;
+  const isTouchOnly = hasTouch && !hasFinePointer;
 
   const actionConfig: Record<
     string,
@@ -211,5 +217,3 @@ function DialogueWheel({ comms }: { comms: Comm[] }) {
     </div>
   );
 }
-
-export default DialogueWheel;

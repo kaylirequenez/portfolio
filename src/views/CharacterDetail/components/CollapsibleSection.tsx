@@ -1,11 +1,11 @@
-interface CollapsibleSectionProps {
+type CollapsibleSectionProps = {
   title: string;
   isOpen: boolean;
   onToggle: () => void;
   children: React.ReactNode;
-}
+};
 
-function CollapsibleSection({
+export default function CollapsibleSection({
   title,
   isOpen,
   onToggle,
@@ -35,4 +35,3 @@ function CollapsibleSection({
     </div>
   );
 }
-export default CollapsibleSection;

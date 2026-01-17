@@ -6,6 +6,7 @@ import {
   Calendar,
   Brain,
   FileText,
+  ShieldCheck,
 } from "lucide-react";
 import { profile } from "../../../data/profile";
 
@@ -97,15 +98,12 @@ export default function CharacterFile({
       <div className="bg-black/70 backdrop-blur-sm border-2 border-cyan-400/50 rounded-lg rounded-tl-none shadow-[0_0_30px_rgba(34,211,238,0.3)] overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-cyan-900/50 to-blue-900/50 p-4 border-b border-cyan-400/30">
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500" />
-              <div className="w-3 h-3 rounded-full bg-green-500" />
+          <div className="flex items-center justify-between text-xs font-mono">
+            <div className="inline-flex items-center gap-2 text-cyan-300/70">
+              <ShieldCheck className="w-4 h-4" />
+              <span>SECURE LINK</span>
             </div>
-            <div className="text-cyan-300/60 text-xs font-mono">
-              ACCESS: GRANTED
-            </div>
+            <div className="text-cyan-300/60">ACCESS: GRANTED</div>
           </div>
         </div>
 

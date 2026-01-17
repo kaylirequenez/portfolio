@@ -1,12 +1,12 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef } from "react";
 import * as THREE from "three";
-import NamePlate from "./MainLanding/NamePlate";
-import RoleCallout from "./MainLanding/RoleCallout";
-import { profile } from "../data/profile";
-import "../styles/avatar-scene.css";
-import Avatar from "../avatar/Avatar";
-import AvatarCamera from "../avatar/AvatarCamera";
+import NamePlate from "./components/NamePlate";
+import RoleCallout from "./components/RoleCallout";
+import { profile } from "../../data/profile";
+import "../../styles/avatar-scene.css";
+import Avatar from "../../avatar/Avatar";
+import AvatarCamera from "../../avatar/AvatarCamera";
 
 interface MainLandingViewProps {
   onEnter: () => void;
