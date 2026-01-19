@@ -38,7 +38,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
     >
       {/* Shadow pass */}
       <Text
-        font="/VT323-Regular.ttf"
+        font="/fonts/VT323-Regular.ttf"
         fontSize={0.36}
         color="#5EE6D6"
         anchorX="center"
@@ -56,7 +56,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
 
       {/* Main name */}
       <Text
-        font="/VT323-Regular.ttf"
+        font="/fonts/VT323-Regular.ttf"
         fontSize={0.35}
         color="#EAEAF0"
         anchorX="center"
@@ -68,7 +68,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
 
       {/* Headline */}
       <Text
-        font="/VT323-Regular.ttf"
+        font="/fonts/VT323-Regular.ttf"
         fontSize={0.09}
         letterSpacing={0.03}
         color="#8F94AA"

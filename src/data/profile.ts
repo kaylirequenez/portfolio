@@ -3,6 +3,9 @@
 // =====================
 
 import type { ProfileData } from "../types/profile.types";
+import sequencerVideo from "../assets/urop/sequencer.mp4";
+import starterCodeVideo from "../assets/urop/starter_code_and_save.mp4";
+import expandableSectionsVideo from "../assets/urop/expandable_sections.mp4";
 
 export const profile: ProfileData = {
   // ─ Character Identification ─
@@ -156,7 +159,7 @@ export const profile: ProfileData = {
       links: [
         {
           label: "System Design Paper",
-          url: "/docs/Squawk_Farm.pdf",
+          url: "/assets/docs/Squawk_Farm.pdf",
         },
       ],
     },
@@ -215,7 +218,7 @@ export const profile: ProfileData = {
       links: [
         {
           label: "Research Paper (PDF)",
-          url: "/docs/SPICE.pdf",
+          url: "/assets/docs/SPICE.pdf",
         },
       ],
     },
@@ -392,6 +395,7 @@ export const profile: ProfileData = {
               "Demonstrates a live coding example where audio and visuals are generated and synchronized in real time within the student environment.",
             details:
               "Kayli designed and implemented interactive example programs used by students to explore music technology through code. This sequencer example combines real-time audio synthesis with responsive visual output, allowing students to immediately see and hear the effects of their code changes. The example serves as both a learning scaffold and a reference implementation, helping students understand timing, sequencing, and audiovisual relationships in a concrete, interactive way.",
+            video: sequencerVideo,
           },
           {
             title: "Audio-to-Visual Mapping Library",
@@ -399,6 +403,7 @@ export const profile: ProfileData = {
               "Introduced a reusable abstraction for declaratively mapping audio parameters to interactive visual elements and controls.",
             details:
               "Kayli created a custom p5.js-based library that abstracts the process of mapping audio parameters—such as frequency or amplitude—to visual representations and UI controls. The library exposes configurable functions where users specify the audio parameter to map, the visual placement, and optional behavior, while the underlying system handles rendering and updates. This design allows students to build expressive audiovisual instruments without needing to manage low-level rendering or audio state, significantly lowering the barrier to experimentation.",
+            image: "/src/assets/urop/gui.jpg",
           },
           {
             title: "IDE Persistence and Starter Templates",
@@ -406,6 +411,7 @@ export const profile: ProfileData = {
               "Ensured student code persists across refreshes while maintaining access to stable starter code for each example.",
             details:
               "Kayli implemented IDE behaviors that preserve a student’s code state across page refreshes, allowing experimentation without accidental data loss. At the same time, each example includes an always-available starter template, enabling students to reset or reference a known-good baseline at any point. This design supports safe exploration while reducing friction for beginners learning to code with real-time audio systems.",
+            video: starterCodeVideo,
           },
           {
             title: "Instructor-Configurable Content System",
@@ -413,6 +419,7 @@ export const profile: ProfileData = {
               "Designed a modular structure for examples and assignments that instructors can easily update and extend.",
             details:
               "Kayli structured the platform so that examples, assignments, and instructional content could be modified or extended without changing core application logic. This modular design allows instructors to update course materials, introduce new exercises, and iterate on curriculum content over time. The approach supports long-term maintainability and was a key step in preparing the project for open-source use.",
+            image: "/src/assets/urop/table_of_contents.png",
           },
           {
             title: "Explorable Multi-Canvas Workspace",
@@ -420,6 +427,7 @@ export const profile: ProfileData = {
               "Built a flexible workspace where students can independently explore code, audio, and visuals using multiple interactive canvases.",
             details:
               "Kayli designed the main student workspace to include multiple canvases for audio and visual output alongside a code editor. Students can expand individual canvases or the editor to focus on specific aspects of their program, encouraging exploration and self-directed learning. This layout supports different learning styles and reinforces the connection between code, sound, and visual behavior in a single integrated environment.",
+            video: expandableSectionsVideo,
           },
         ],
       },

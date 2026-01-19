@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-
-interface EvidenceItem {
-  title: string;
-  summary: string;
-  details: string;
-  image?: string;
-}
+import type { EvidenceItem } from "../../../types/profile.types";
 
 interface EvidencePanelProps {
   evidence: {
@@ -23,6 +17,7 @@ export default function EvidencePanel({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [isImageRotated, setIsImageRotated] = useState(false);
 
   const currentItem = items[currentIndex];
@@ -53,6 +48,13 @@ export default function EvidencePanel({
               alt={currentItem.title}
               className="max-w-full max-h-[60vh] w-auto h-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setIsImageModalOpen(true)}
+            />
+          ) : currentItem.video ? (
+            <video
+              src={currentItem.video}
+              controls
+              className="max-w-full max-h-[60vh] w-auto h-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setIsVideoModalOpen(true)}
             />
           ) : (
             <div className="text-center space-y-2 p-8">
@@ -170,7 +172,7 @@ export default function EvidencePanel({
 
                   <button
                     onClick={() => setIsImageRotated((r) => !r)}
-                    className="absolute -top-12 left-0 lg:hidden portrait:flex hidden items-center gap-2 bg-slate-800/80 border border-cyan-400/40 rounded px-3 py-2 text-xs font-mono text-cyan-300 hover:bg-cyan-400/20 transition-all cursor-pointer"
+                    className="absolute -top-12 left-0 flex items-center gap-2 bg-slate-800/80 border border-cyan-400/40 rounded px-3 py-2 text-xs font-mono text-cyan-300 hover:bg-cyan-400/20 transition-all cursor-pointer"
                     title="Rotate image"
                   >
                     <span>{isImageRotated ? "Rotate back" : "Rotate"}</span>
@@ -192,7 +194,44 @@ export default function EvidencePanel({
                 </div>
               </div>
             </div>,
-            document.body
+            document.body,
+          )}
+
+        {/* Video modal */}
+        {isVideoModalOpen &&
+          currentItem.video &&
+          createPortal(
+            <div
+              className="fixed inset-0 bg-black/90 z-[9999]"
+              onClick={() => setIsVideoModalOpen(false)}
+            >
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div
+                  className="relative flex flex-col items-center justify-center"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    onClick={() => setIsVideoModalOpen(false)}
+                    className="absolute -top-12 right-0 w-8 h-8 flex items-center justify-center bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 hover:bg-slate-700 transition-colors"
+                    title="Close"
+                  >
+                    ✕
+                  </button>
+
+                  <video
+                    src={currentItem.video}
+                    controls
+                    autoPlay
+                    className="max-w-[90vw] max-h-[85vh] object-contain"
+                  />
+
+                  <div className="mt-4 text-sm font-mono text-cyan-300 uppercase tracking-wider text-center">
+                    {currentItem.title}
+                  </div>
+                </div>
+              </div>
+            </div>,
+            document.body,
           )}
       </div>
     </div>

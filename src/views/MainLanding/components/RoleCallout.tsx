@@ -68,7 +68,7 @@ export default function RoleCallout({ roles }: RoleCalloutProps) {
     <group ref={groupRef} position={[0, -1.75, 0.25]}>
       <Text
         ref={textRef}
-        font="/VT323-Regular.ttf"
+        font="/fonts/VT323-Regular.ttf"
         fontSize={0.16}
         letterSpacing={0.04}
         color="#D6DAE8"
