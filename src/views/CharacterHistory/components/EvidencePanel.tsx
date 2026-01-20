@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { createPortal } from "react-dom";
 import type { EvidenceItem } from "../../../types/profile.types";
+import MediaModal from "./MediaModal";
 
 interface EvidencePanelProps {
   evidence: {
@@ -16,9 +16,7 @@ export default function EvidencePanel({
   const items = evidence.items;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [isImageRotated, setIsImageRotated] = useState(false);
+  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
 
   const currentItem = items[currentIndex];
   const hasMultiple = items.length > 1;
@@ -41,30 +39,48 @@ export default function EvidencePanel({
         }`}
       >
         {/* Image / evidence display */}
-        <div className="bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden">
+        <div className="relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden ">
           {currentItem.image ? (
             <img
               src={currentItem.image}
               alt={currentItem.title}
-              className="max-w-full max-h-[60vh] w-auto h-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setIsImageModalOpen(true)}
+              className="max-w-full max-h-[60vh] object-contain"
             />
           ) : currentItem.video ? (
             <video
               src={currentItem.video}
               controls
-              className="max-w-full max-h-[60vh] w-auto h-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setIsVideoModalOpen(true)}
+              className="max-w-full max-h-[60vh] object-contain"
             />
-          ) : (
-            <div className="text-center space-y-2 p-8">
-              <div className="text-4xl">📸</div>
-              <div className="text-xs text-cyan-400/50 font-mono uppercase tracking-wider">
-                {currentItem.title}
-              </div>
-              <div className="text-xs text-cyan-300/40">
-                [Evidence unavailable at the moment]
-              </div>
+          ) : null}
+
+          {/* Hover expand overlay */}
+          {(currentItem.image || currentItem.video) && (
+            <div
+              className="
+      absolute inset-0
+      opacity-0 group-hover:opacity-100
+      transition-opacity
+      bg-black/40
+      pointer-events-none
+    "
+            >
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsContentModalOpen(true);
+                }}
+                className="
+        pointer-events-auto
+        absolute top-2 left-2
+        px-3 py-1.5
+        bg-slate-800/80 border border-cyan-400/40 rounded
+        text-cyan-300 font-mono text-xs uppercase tracking-wider
+        hover:bg-cyan-400/20 transition-colors
+      "
+              >
+                ⤢ Expand
+              </button>
             </div>
           )}
         </div>
@@ -139,100 +155,14 @@ export default function EvidencePanel({
             ))}
           </div>
         )}
-
-        {/* Image modal */}
-        {isImageModalOpen &&
-          currentItem.image &&
-          createPortal(
-            <div
-              className="fixed inset-0 bg-black/90 z-[9999]"
-              onClick={() => {
-                setIsImageModalOpen(false);
-                setIsImageRotated(false);
-              }}
-            >
-              <div className="absolute inset-0 flex items-center justify-center p-4">
-                <div
-                  className="relative flex flex-col items-center justify-center transition-transform duration-300"
-                  onClick={(e) => e.stopPropagation()}
-                  style={{
-                    transform: isImageRotated ? "rotate(90deg)" : "none",
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      setIsImageModalOpen(false);
-                      setIsImageRotated(false);
-                    }}
-                    className="absolute -top-12 right-0 w-8 h-8 flex items-center justify-center bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 hover:bg-slate-700 transition-colors"
-                    title="Close"
-                  >
-                    ✕
-                  </button>
-
-                  <button
-                    onClick={() => setIsImageRotated((r) => !r)}
-                    className="absolute -top-12 left-0 flex items-center gap-2 bg-slate-800/80 border border-cyan-400/40 rounded px-3 py-2 text-xs font-mono text-cyan-300 hover:bg-cyan-400/20 transition-all cursor-pointer"
-                    title="Rotate image"
-                  >
-                    <span>{isImageRotated ? "Rotate back" : "Rotate"}</span>
-                  </button>
-
-                  <img
-                    src={currentItem.image}
-                    alt={currentItem.title}
-                    className="max-w-[90vw] max-h-[85vh] object-contain"
-                    style={{
-                      maxWidth: isImageRotated ? "90vh" : "90vw",
-                      maxHeight: isImageRotated ? "90vw" : "85vh",
-                    }}
-                  />
-
-                  <div className="mt-4 text-sm font-mono text-cyan-300 uppercase tracking-wider text-center">
-                    {currentItem.title}
-                  </div>
-                </div>
-              </div>
-            </div>,
-            document.body,
-          )}
-
-        {/* Video modal */}
-        {isVideoModalOpen &&
-          currentItem.video &&
-          createPortal(
-            <div
-              className="fixed inset-0 bg-black/90 z-[9999]"
-              onClick={() => setIsVideoModalOpen(false)}
-            >
-              <div className="absolute inset-0 flex items-center justify-center p-4">
-                <div
-                  className="relative flex flex-col items-center justify-center"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() => setIsVideoModalOpen(false)}
-                    className="absolute -top-12 right-0 w-8 h-8 flex items-center justify-center bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 hover:bg-slate-700 transition-colors"
-                    title="Close"
-                  >
-                    ✕
-                  </button>
-
-                  <video
-                    src={currentItem.video}
-                    controls
-                    autoPlay
-                    className="max-w-[90vw] max-h-[85vh] object-contain"
-                  />
-
-                  <div className="mt-4 text-sm font-mono text-cyan-300 uppercase tracking-wider text-center">
-                    {currentItem.title}
-                  </div>
-                </div>
-              </div>
-            </div>,
-            document.body,
-          )}
+        {isContentModalOpen && currentItem && (
+          <MediaModal
+            title={currentItem.title}
+            imageSrc={currentItem.image}
+            videoSrc={currentItem.video}
+            onClose={() => setIsContentModalOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
