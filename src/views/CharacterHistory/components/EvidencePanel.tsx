@@ -55,23 +55,24 @@ export default function EvidencePanel({
           ) : null}
 
           {/* Hover expand overlay */}
-          {(currentItem.image || currentItem.video) && (
+          {(currentItem.image || currentItem.video) && !isContentModalOpen && (
             <div
+              onClick={(e) => e.stopPropagation()}
               className="
       absolute inset-0
       opacity-0 group-hover:opacity-100
       transition-opacity
       bg-black/40
-      pointer-events-none
+      pointer-events-auto
     "
             >
               <button
                 onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   setIsContentModalOpen(true);
                 }}
                 className="
-        pointer-events-auto
         absolute top-2 left-2
         px-3 py-1.5
         bg-slate-800/80 border border-cyan-400/40 rounded
