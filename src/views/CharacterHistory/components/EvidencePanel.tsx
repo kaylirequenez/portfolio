@@ -63,7 +63,7 @@ export default function EvidencePanel({
                 {currentItem.title}
               </div>
               <div className="text-xs text-cyan-300/40">
-                [Placeholder for evidence image/video]
+                [Evidence unavailable at the moment]
               </div>
             </div>
           )}

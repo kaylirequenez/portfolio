@@ -9,8 +9,8 @@ export default function App() {
   const [view, setView] = useState<
     "landing" | "loading" | "detail" | "operations" | "archives"
   >("landing");
-  const [detailTab, setDetailTab] = useState(1);
   const [bioTypedIndex, setBioTypedIndex] = useState<number | null>(null);
+  const [initialTab, setInitialTab] = useState<number>(1);
 
   if (view === "landing") {
     return (
@@ -34,16 +34,16 @@ export default function App() {
   }
   return (
     <CharacterDetailView
-      initialTab={detailTab}
+      initialTab={initialTab}
       bioTypedIndex={bioTypedIndex}
       setBioTypedIndex={setBioTypedIndex}
       onBack={() => setView("landing")}
       onOpenOperations={() => {
-        setDetailTab(0);
+        setInitialTab(0);
         setView("operations");
       }}
       onOpenArchives={() => {
-        setDetailTab(0);
+        setInitialTab(0);
         setView("archives");
       }}
     />

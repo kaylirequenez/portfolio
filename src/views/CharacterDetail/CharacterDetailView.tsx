@@ -12,8 +12,8 @@ type CharacterDetailProps = {
   onBack?: () => void;
   onOpenOperations?: () => void;
   onOpenArchives?: () => void;
-  initialTab: number;
   bioTypedIndex: number | null;
+  initialTab: number;
 };
 
 const TABS = [
@@ -21,69 +21,6 @@ const TABS = [
   { label: "AVATAR", icon: "👤" },
   { label: "SKILLS", icon: "⚡" },
 ];
-
-/**
- * Inner view is keyed by layout mode so that when we switch
- * desktop <-> compact we remount the swipe state cleanly.
- * This prevents "old tab highlighted" and other slick glitches.
- */
-function CharacterDetailViewInner({
-  isCompact,
-  hasTouch,
-  initialTab,
-  onBack,
-  onOpenOperations,
-  onOpenArchives,
-  bioTypedIndex,
-  setBioTypedIndex,
-}: {
-  isCompact: boolean;
-  hasTouch: boolean;
-  initialTab: number;
-  onBack?: () => void;
-  onOpenOperations?: () => void;
-  onOpenArchives?: () => void;
-  bioTypedIndex: number | null;
-  setBioTypedIndex: (i: number) => void;
-}) {
-  const { sliderRef, sliderSettings, activeTab, goToTab, onWheel } =
-    useSwipeTabs({
-      initialTab: initialTab,
-      tabCount: 3,
-      enableTouch: hasTouch,
-    });
-
-  return (
-    <div className="relative h-full flex flex-col">
-      {/* TAB BAR (compact layout only) */}
-      {isCompact && (
-        <ContentTabs tabs={TABS} activeTab={activeTab} onSelect={goToTab} />
-      )}
-
-      {/* CONTENT */}
-      <div className="flex-1 min-h-0">
-        <ContentBrowserFrame
-          layout="three-panel"
-          panels={[
-            <LeftPanel
-              key="left"
-              onOpenArchives={onOpenArchives}
-              onOpenOperations={onOpenOperations}
-              bioTypedIndex={bioTypedIndex}
-              setBioTypedIndex={setBioTypedIndex}
-            />,
-            <CenterPanel key="center" onBack={onBack} />,
-            <RightPanel key="right" />,
-          ]}
-          onWheel={onWheel}
-          sliderRef={sliderRef}
-          sliderSettings={sliderSettings}
-          isCompact={isCompact}
-        />
-      </div>
-    </div>
-  );
-}
 
 export default function CharacterDetailView({
   initialTab,
@@ -95,6 +32,13 @@ export default function CharacterDetailView({
 }: CharacterDetailProps) {
   const isCompact = useIsCompactLayout();
   const { hasTouch } = useInputCapabilities();
+
+  const { sliderRef, sliderSettings, activeTab, goToTab, onWheel } =
+    useSwipeTabs({
+      initialTab,
+      tabCount: 3,
+      enableTouch: hasTouch,
+    });
 
   /**
    * Policy:
@@ -117,18 +61,34 @@ export default function CharacterDetailView({
         />
       </div>
 
-      {/* Keyed remount fixes: stale activeTab highlight + slick glitch on resize */}
-      <CharacterDetailViewInner
-        key={isCompact ? "mode-compact" : "mode-desktop"}
-        isCompact={isCompact}
-        hasTouch={hasTouch}
-        initialTab={initialTab}
-        onBack={onBack}
-        onOpenOperations={onOpenOperations}
-        onOpenArchives={onOpenArchives}
-        bioTypedIndex={bioTypedIndex}
-        setBioTypedIndex={setBioTypedIndex}
-      />
+      <div className="relative h-full flex flex-col">
+        {/* TAB BAR (compact layout only) */}
+        {isCompact && (
+          <ContentTabs tabs={TABS} activeTab={activeTab} onSelect={goToTab} />
+        )}
+
+        {/* CONTENT */}
+        <div className="flex-1 min-h-0">
+          <ContentBrowserFrame
+            layout="three-panel"
+            panels={[
+              <LeftPanel
+                key="left"
+                onOpenArchives={onOpenArchives}
+                onOpenOperations={onOpenOperations}
+                bioTypedIndex={bioTypedIndex}
+                setBioTypedIndex={setBioTypedIndex}
+              />,
+              <CenterPanel key="center" onBack={onBack} />,
+              <RightPanel key="right" />,
+            ]}
+            onWheel={onWheel}
+            sliderRef={sliderRef}
+            sliderSettings={sliderSettings}
+            isCompact={isCompact}
+          />
+        </div>
+      </div>
     </div>
   );
 }

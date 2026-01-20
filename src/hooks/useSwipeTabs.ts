@@ -84,7 +84,7 @@ export function useSwipeTabs({
     touchThreshold: 10,
 
     adaptiveHeight: false,
-    initialSlide: initialTab,
+    initialSlide: activeTab,
 
     beforeChange: (_: number, next: number) => {
       activeTabRef.current = next;
