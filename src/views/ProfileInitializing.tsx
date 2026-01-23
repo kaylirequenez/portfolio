@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { profile } from "../data/profile";
+import GridOverlay from "../components/GridOverlay";
 
 interface ProfileInitializingProps {
   onComplete: () => void;
@@ -58,24 +59,9 @@ export default function ProfileInitializing({
 
   return (
     <div className="size-full bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950 overflow-hidden flex items-center justify-center">
-      {/* Grid overlay */}
-      <div className="fixed inset-0 opacity-20 pointer-events-none">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(16, 185, 129, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.3) 1px, transparent 1px)",
-            backgroundSize: "50px 50px",
-            animation: "gridPulse 2s ease-in-out infinite",
-          }}
-        />
-      </div>
+      <GridOverlay animated />
 
       <style>{`
-        @keyframes gridPulse {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.6; }
-        }
         @keyframes textFlicker {
           0%, 100% { opacity: 1; }
           95% { opacity: 0.95; }

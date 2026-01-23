@@ -7,14 +7,16 @@
 // ─────────────────────────────────────────────────────
 // Evidence & Media Types
 // ─────────────────────────────────────────────────────
-
-export interface EvidenceItem {
+type EvidenceBase = {
   title: string;
   summary: string;
   details: string;
-  image?: string;
-  video?: string;
-}
+};
+
+export type EvidenceItem =
+  | (EvidenceBase & { type: "image"; image: string })
+  | (EvidenceBase & { type: "video"; video: string })
+  | (EvidenceBase & { type: "pdf"; pdf: string });
 
 export interface Evidence {
   items: EvidenceItem[];

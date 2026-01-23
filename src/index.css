@@ -74,3 +74,13 @@ body {
     opacity: 0;
   }
 }
+
+@keyframes gridPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}

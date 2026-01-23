@@ -7,6 +7,7 @@ import DataIndex from "./DataIndex";
 import ContentBrowserFrame from "../../../components/ContentBrowserFrame";
 import ContentTabs from "../../../components/ContentTabs";
 import { ContentBrowserHeader } from "./DataHeader";
+import GridOverlay from "../../../components/GridOverlay";
 
 import useIsCompactLayout from "../../../hooks/useIsCompactLayout";
 import { useSwipeTabs } from "../../../hooks/useSwipeTabs";
@@ -17,6 +18,7 @@ interface ContentBrowserPageProps {
   indexHeader: string;
   data: DataItem[];
   onBack: () => void;
+  emptyStateMessage?: string;
 }
 
 export default function ContentBrowserPage({
@@ -24,6 +26,7 @@ export default function ContentBrowserPage({
   data,
   header,
   onBack,
+  emptyStateMessage,
 }: ContentBrowserPageProps) {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const hasSelection = selectedItemId !== null;
@@ -43,8 +46,9 @@ export default function ContentBrowserPage({
 
   /* ─────────────────────── Render helpers ─────────────────────── */
 
-  const renderFile = () =>
-    currentItem && (
+  const renderFile = () => {
+    if (!currentItem) return null;
+    return (
       <DataFile
         header={getItemHeader(currentItem)}
         data={currentItem}
@@ -52,9 +56,10 @@ export default function ContentBrowserPage({
         isCompactLayout={isCompactLayout}
       />
     );
+  };
 
   const renderEvidence = () => (
-    <div className="h-full min-h-0">
+    <div className="h-full min-h-0 w-full">
       {currentItem ? (
         <EvidencePanel evidence={currentItem.evidence} />
       ) : (
@@ -65,6 +70,7 @@ export default function ContentBrowserPage({
 
   return (
     <div className="size-full bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950 overflow-hidden">
+      <GridOverlay />
       <div className="relative h-full flex flex-col p-4">
         <ContentBrowserHeader header={header} onBack={onBack} />
 
@@ -91,14 +97,22 @@ export default function ContentBrowserPage({
         )}
 
         <div className="flex-1 flex min-h-0">
-          <ContentBrowserFrame
-            layout="two-panel"
-            panels={[renderFile(), renderEvidence()]}
-            onWheel={onWheel}
-            sliderRef={sliderRef}
-            sliderSettings={sliderSettings}
-            isCompact={isCompactLayout}
-          />
+          {!hasSelection ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-cyan-400/50 font-mono text-sm uppercase tracking-wider">
+                {emptyStateMessage || "Select an item"}
+              </div>
+            </div>
+          ) : (
+            <ContentBrowserFrame
+              layout="two-panel"
+              panels={[renderFile(), renderEvidence()]}
+              onWheel={onWheel}
+              sliderRef={sliderRef}
+              sliderSettings={sliderSettings}
+              isCompact={isCompactLayout}
+            />
+          )}
         </div>
 
         {!hasSelection && (

@@ -71,12 +71,15 @@ export default function MediaModal({
             <video
               src={videoSrc}
               controls
+              controlsList="nodownload nofullscreen noremoteplayback"
               autoPlay
               className="object-contain"
               style={{
                 maxWidth: "90vw",
                 maxHeight: "85vh",
               }}
+              disablePictureInPicture
+              playsInline
             />
           )}
 

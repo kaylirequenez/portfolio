@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { EvidenceItem } from "../../../types/profile.types";
 import MediaModal from "./MediaModal";
+import PDFPreview from "./PDFPreview";
+import PDFModal from "./PDFModal";
 
 interface EvidencePanelProps {
   evidence: {
@@ -17,6 +19,7 @@ export default function EvidencePanel({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
+  const [isPDFModalOpen, setIsPDFModalOpen] = useState(false);
 
   const currentItem = items[currentIndex];
   const hasMultiple = items.length > 1;
@@ -39,50 +42,83 @@ export default function EvidencePanel({
         }`}
       >
         {/* Image / evidence display */}
-        <div className="relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden ">
-          {currentItem.image ? (
+        <div className="relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden min-h-[400px]">
+          {currentItem.type === "image" ? (
             <img
               src={currentItem.image}
               alt={currentItem.title}
               className="max-w-full max-h-[60vh] object-contain"
             />
-          ) : currentItem.video ? (
+          ) : currentItem.type === "video" ? (
             <video
               src={currentItem.video}
               controls
+              controlsList="nodownload nofullscreen noremoteplayback"
               className="max-w-full max-h-[60vh] object-contain"
+              playsInline
+              disablePictureInPicture
+            />
+          ) : currentItem.type === "pdf" ? (
+            <PDFPreview
+              pdfUrl={currentItem.pdf}
+              title={currentItem.title}
+              onOpenFull={() => {
+                const normalizedUrl = currentItem.pdf.startsWith("/src")
+                  ? currentItem.pdf.replace(/^\/src/, "")
+                  : currentItem.pdf;
+                window.open(normalizedUrl, "_blank", "noopener,noreferrer");
+              }}
             />
           ) : null}
 
-          {/* Hover expand overlay */}
-          {(currentItem.image || currentItem.video) && !isContentModalOpen && (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="
-      absolute inset-0
-      opacity-0 group-hover:opacity-100
-      transition-opacity
-      bg-black/40
-      pointer-events-auto
-    "
-            >
+          {/* Action buttons - always visible for all media types */}
+          {currentItem.type === "pdf" && (
+            <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
               <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setIsContentModalOpen(true);
+                  setIsPDFModalOpen(true);
                 }}
-                className="
-        absolute top-2 left-2
-        px-3 py-1.5
-        bg-slate-800/80 border border-cyan-400/40 rounded
-        text-cyan-300 font-mono text-xs uppercase tracking-wider
-        hover:bg-cyan-400/20 transition-colors
-      "
+                className="flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors"
+                title="View PDF in full screen"
               >
-                ⤢ Expand
+                <span className="text-lg">⤢</span>
+                <span>Expand</span>
               </button>
+              <a
+                href={
+                  currentItem.pdf.startsWith("/src")
+                    ? currentItem.pdf.replace(/^\/src/, "")
+                    : currentItem.pdf
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors"
+                title="Open PDF in new tab"
+              >
+                <span className="text-lg">🔗</span>
+                <span>Open</span>
+              </a>
             </div>
+          )}
+
+          {/* Expand button for images and videos - always visible */}
+          {(currentItem.type === "image" || currentItem.type === "video") &&
+            !isContentModalOpen && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsContentModalOpen(true);
+              }}
+              className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors z-10"
+              title="View in full screen"
+            >
+              <span className="text-lg">⤢</span>
+              <span>Expand</span>
+            </button>
           )}
         </div>
 
@@ -159,9 +195,16 @@ export default function EvidencePanel({
         {isContentModalOpen && currentItem && (
           <MediaModal
             title={currentItem.title}
-            imageSrc={currentItem.image}
-            videoSrc={currentItem.video}
+            imageSrc={currentItem.type === "image" ? currentItem.image : undefined}
+            videoSrc={currentItem.type === "video" ? currentItem.video : undefined}
             onClose={() => setIsContentModalOpen(false)}
+          />
+        )}
+        {isPDFModalOpen && currentItem.type === "pdf" && (
+          <PDFModal
+            title={currentItem.title}
+            pdfUrl={currentItem.pdf}
+            onClose={() => setIsPDFModalOpen(false)}
           />
         )}
       </div>

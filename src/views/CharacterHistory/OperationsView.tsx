@@ -8,6 +8,7 @@ export default function OperationsView({ onBack }: { onBack: () => void }) {
       indexHeader="MISSION FILES"
       data={profile.experience}
       onBack={onBack}
+      emptyStateMessage="Select a mission file"
     />
   );
 }

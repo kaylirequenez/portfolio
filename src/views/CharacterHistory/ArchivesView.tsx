@@ -8,6 +8,7 @@ export default function ArchivesView({ onBack }: { onBack: () => void }) {
       indexHeader="ARCHIVES"
       data={profile.projects}
       onBack={onBack}
+      emptyStateMessage="Select an archive"
     />
   );
 }

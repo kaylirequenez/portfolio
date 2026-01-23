@@ -97,6 +97,7 @@ export const profile: ProfileData = {
     "User-Centered Software Engineer",
   ],
 
+  // TODO: update descriptions & summaries
   // ─ Projects ─
   projects: [
     {
@@ -118,6 +119,17 @@ export const profile: ProfileData = {
       evidence: {
         items: [
           {
+            type: "pdf",
+            title: "System Paper",
+            summary:
+              "The Squawk Farm system design paper detailing the architecture and musical constraints.",
+            details:
+              "Kayli authored the system design paper outlining the architecture, timing model, audio engine, and constraint mechanisms that enable Squawk Farm's interactive music creation capabilities.",
+            pdf: "/docs/Squawk_Farm.pdf",
+          },
+
+          {
+            type: "image",
             title: "Quantized Audio Recording Pipeline",
             summary:
               "Streamed recording interface converting raw audio into rhythmically aligned loops.",
@@ -126,6 +138,7 @@ export const profile: ProfileData = {
             image: "/src/assets/squawkfarm/recording.png",
           },
           {
+            type: "image",
             title: "Symbolic Loop Sequencer",
             summary:
               "Grid-based editor for rhythmic and melodic control of each creature.",
@@ -134,6 +147,7 @@ export const profile: ProfileData = {
             image: "/src/assets/squawkfarm/sequencer.png",
           },
           {
+            type: "image",
             title: "Beat Templates & Harmonic Roles",
             summary: "Context-aware rhythm and harmony generation.",
             details:
@@ -147,7 +161,6 @@ export const profile: ProfileData = {
         "Kivy",
         "Digital Signal Processing",
         "Audio Scheduling",
-        "Symbolic Sequencing",
         "Music Theory",
       ],
       takeaways: [
@@ -156,12 +169,6 @@ export const profile: ProfileData = {
         "Building scalable timing architectures for interactive audio",
       ],
       collaborators: ["Maxine Perroni-Scharf", "Raymond Brookman"],
-      links: [
-        {
-          label: "System Design Paper",
-          url: "/assets/docs/Squawk_Farm.pdf",
-        },
-      ],
     },
     {
       id: "spice",
@@ -182,19 +189,21 @@ export const profile: ProfileData = {
       evidence: {
         items: [
           {
-            title: "Synthetic Language Pipeline",
-            summary: "Typology-controlled synthetic language generation.",
+            type: "pdf",
+            title: "Research Paper",
+            summary:
+              "The SPICE research paper detailing the synthetic language generation and translation pipeline.",
             details:
-              "Designed the pipeline for generating stable constructed languages under strict orthographic and morphological constraints, ensuring consistency across hundreds of translated examples.",
-            image: "/src/assets/spice/typology_pipeline.png",
+              "Kayli contributed to the design and implementation of the synthetic language generation and translation components described in the research paper, which outlines the motivation, methodology, and experimental results of the SPICE project.",
+            pdf: "/docs/SPICE.pdf",
           },
           {
-            title: "Controlled Translation Workflow",
-            summary:
-              "Deterministic dataset translation with lexicon validation.",
+            type: "image",
+            title: "Project Poster",
+            summary: "Above is the research poster summarizing SPICE.",
             details:
-              "Implemented translation batching, vocabulary reuse enforcement, and conflict detection to maintain corpus-scale consistency for multilingual fine-tuning.",
-            image: "/src/assets/spice/translation_prompt.png",
+              "Kayli designed the pipeline for generating stable constructed languages under strict orthographic and morphological constraints, ensuring consistency across hundreds of translated examples.",
+            image: "/src/assets/SPICE/presentation.png",
           },
         ],
       },
@@ -205,9 +214,9 @@ export const profile: ProfileData = {
         "PyTorch",
         "PEFT / LoRA / QLoRA",
         "Accelerate",
-        "bitsandbytes",
         "OmegaConf",
-        "Weights & Biases",
+        "Prompt Engineering",
+        "World Atlas of Language Structures (WALS)",
       ],
       takeaways: [
         "Building deterministic synthetic data pipelines for multilingual NLP",
@@ -215,12 +224,6 @@ export const profile: ProfileData = {
         "Balancing data quality, scalability, and compute constraints",
       ],
       collaborators: ["Angela Chen", "Kat Dou", "Joel Manu"],
-      links: [
-        {
-          label: "Research Paper (PDF)",
-          url: "/assets/docs/SPICE.pdf",
-        },
-      ],
     },
 
     {
@@ -242,18 +245,19 @@ export const profile: ProfileData = {
       evidence: {
         items: [
           {
-            title: "System Architecture",
+            type: "pdf",
+            title: "Research Paper",
             summary: "High-level protocol architecture for SNORT.",
             details:
               "Illustrates how storage reservation, forwarding logic, and confirmation signals interact within the SolarNet environment.",
-            image: "/assets/snort/architecture.png",
+            pdf: "/docs/SNORT.pdf",
           },
         ],
       },
       tools: [
         "Distributed Systems Design",
         "Delay-Tolerant Networking (DTN)",
-        "Bundle Protocol",
+        "Storage System Architecture",
         "Protocol Architecture",
       ],
       takeaways: [
@@ -261,56 +265,50 @@ export const profile: ProfileData = {
         "Reasoning about correctness without implementation",
       ],
       collaborators: ["Cameron Holt", "Jennifer Kim"],
-      links: [
-        {
-          label: "Design Paper (PDF)",
-          url: "/assets/docs/SNORT.pdf",
-        },
-      ],
     },
 
-    {
-      id: "pop-culture-activism",
-      title: "Pop Culture and Activism",
-      subtitle: "Behavioral Study + Interactive Game System",
-      role: "Research Lead & Interactive Systems Developer",
-      dates: "Apr. – May 2021",
-      description:
-        "This project studies how pop culture, social pressure, and personal reasoning influence engagement in social and environmental activism. A behavioral survey and an educational arcade-style game were used to collect data, analyze motivation patterns, and visualize their real-world impact through gameplay.",
-      system:
-        "An interactive system combining a behavioral survey instrument, weighted scoring model for influence classification, and a p5.js-based arcade game that translates environmental actions into gameplay mechanics for educational reinforcement.",
-      impact: [
-        "Designed a behavioral survey measuring celebrity influence, peer pressure, and self-driven logic",
-        "Developed a weighted scoring model to classify influence patterns and outcomes",
-        "Built an interactive arcade game translating environmental actions into gameplay mechanics",
-        "Integrated data visualization and game systems to reinforce educational outcomes",
-      ],
-      evidence: {
-        items: [
-          {
-            title: "Survey & Data Analysis",
-            summary: "Behavioral data collection and visualization.",
-            details:
-              "Survey responses were categorized and visualized to compare individual behavior against aggregate trends across influence types.",
-            image: "/assets/pop-culture/data.png",
-          },
-          {
-            title: "Educational Arcade Game",
-            summary:
-              "Gameplay mechanics representing environmental decision-making.",
-            details:
-              "A Space-Invaders-style game where environmental actions function as upgrades, directly influencing difficulty and progression.",
-            image: "/assets/pop-culture/gameplay.png",
-          },
-        ],
-      },
-      tools: ["JavaScript (ES6+)", "p5.js", "HTML5", "CSS3"],
-      takeaways: [
-        "Connecting behavioral research with interactive design",
-        "Using games as tools for data collection and education",
-        "Visualizing complex social dynamics through interactive feedback",
-      ],
-    },
+    // {
+    //   id: "pop-culture-activism",
+    //   title: "Pop Culture and Activism",
+    //   subtitle: "Behavioral Study + Interactive Game System",
+    //   role: "Research Lead & Interactive Systems Developer",
+    //   dates: "Apr. – May 2021",
+    //   description:
+    //     "This project studies how pop culture, social pressure, and personal reasoning influence engagement in social and environmental activism. A behavioral survey and an educational arcade-style game were used to collect data, analyze motivation patterns, and visualize their real-world impact through gameplay.",
+    //   system:
+    //     "An interactive system combining a behavioral survey instrument, weighted scoring model for influence classification, and a p5.js-based arcade game that translates environmental actions into gameplay mechanics for educational reinforcement.",
+    //   impact: [
+    //     "Designed a behavioral survey measuring celebrity influence, peer pressure, and self-driven logic",
+    //     "Developed a weighted scoring model to classify influence patterns and outcomes",
+    //     "Built an interactive arcade game translating environmental actions into gameplay mechanics",
+    //     "Integrated data visualization and game systems to reinforce educational outcomes",
+    //   ],
+    //   evidence: {
+    //     items: [
+    //       {
+    //         title: "Survey & Data Analysis",
+    //         summary: "Behavioral data collection and visualization.",
+    //         details:
+    //           "Survey responses were categorized and visualized to compare individual behavior against aggregate trends across influence types.",
+    //         image: "/assets/pop-culture/data.png",
+    //       },
+    //       {
+    //         title: "Educational Arcade Game",
+    //         summary:
+    //           "Gameplay mechanics representing environmental decision-making.",
+    //         details:
+    //           "A Space-Invaders-style game where environmental actions function as upgrades, directly influencing difficulty and progression.",
+    //         image: "/assets/pop-culture/gameplay.png",
+    //       },
+    //     ],
+    //   },
+    //   tools: ["JavaScript (ES6+)", "p5.js", "HTML5", "CSS3"],
+    //   takeaways: [
+    //     "Connecting behavioral research with interactive design",
+    //     "Using games as tools for data collection and education",
+    //     "Visualizing complex social dynamics through interactive feedback",
+    //   ],
+    // },
   ],
 
   // ─ Experience ─
@@ -336,6 +334,7 @@ export const profile: ProfileData = {
       evidence: {
         items: [
           {
+            type: "image",
             title: "Metric Source Configuration",
             summary:
               "Constructed the above source code using metric math and query-based definitions to control which metrics appear in the ECS Console and how they are computed and displayed.",
@@ -344,6 +343,7 @@ export const profile: ProfileData = {
             image: "/src/assets/amazon/cloudwatch.png",
           },
           {
+            type: "image",
             title: "Embedded ECS Dashboards",
             summary:
               "Above are some of the CloudWatch metric configurations that now exist within the ECS Console.",
@@ -390,6 +390,7 @@ export const profile: ProfileData = {
       evidence: {
         items: [
           {
+            type: "video",
             title: "Interactive Sequencer Example",
             summary:
               "Demonstrates a live coding example where audio and visuals are generated and synchronized in real time within the student environment.",
@@ -398,6 +399,7 @@ export const profile: ProfileData = {
             video: sequencerVideo,
           },
           {
+            type: "image",
             title: "Audio-to-Visual Mapping Library",
             summary:
               "Introduced a reusable abstraction for declaratively mapping audio parameters to interactive visual elements and controls.",
@@ -406,6 +408,7 @@ export const profile: ProfileData = {
             image: "/src/assets/urop/gui.jpg",
           },
           {
+            type: "video",
             title: "IDE Persistence and Starter Templates",
             summary:
               "Ensured student code persists across refreshes while maintaining access to stable starter code for each example.",
@@ -414,6 +417,7 @@ export const profile: ProfileData = {
             video: starterCodeVideo,
           },
           {
+            type: "image",
             title: "Instructor-Configurable Content System",
             summary:
               "Designed a modular structure for examples and assignments that instructors can easily update and extend.",
@@ -422,6 +426,7 @@ export const profile: ProfileData = {
             image: "/src/assets/urop/table_of_contents.png",
           },
           {
+            type: "video",
             title: "Explorable Multi-Canvas Workspace",
             summary:
               "Built a flexible workspace where students can independently explore code, audio, and visuals using multiple interactive canvases.",
