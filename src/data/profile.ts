@@ -24,19 +24,19 @@ export const profile: ProfileData = {
 
   // ─ Skills & Languages ─
   skills: [
-    { name: "Machine Learning & AI", mastery: 95 },
-    { name: "Systems Engineering", mastery: 90 },
-    { name: "Audio Systems & DSP", mastery: 88 },
-    { name: "Algorithms & Data Structures", mastery: 92 },
-    { name: "Interactive / Creative Coding", mastery: 94 },
-    { name: "Software Construction", mastery: 91 },
+    { name: "Machine Learning & AI", mastery: 92 },
+    { name: "Systems Engineering", mastery: 95 },
+    { name: "Audio Systems & DSP", mastery: 97 },
+    { name: "Algorithms & Data Structures", mastery: 96 },
+    { name: "Interactive / Creative Coding", mastery: 100 },
+    { name: "Software Construction", mastery: 98 },
   ],
 
   languages: [
-    { name: "Python", level: 98 },
-    { name: "C++", level: 85 },
-    { name: "TypeScript", level: 92 },
-    { name: "SQL", level: 88 },
+    { name: "Python", level: 100 },
+    { name: "C", level: 92 },
+    { name: "TypeScript", level: 100 },
+    { name: "SQL", level: 90 },
   ],
 
   // ─ Inventory & Communication ─
@@ -64,7 +64,7 @@ export const profile: ProfileData = {
   ],
 
   tools: [
-    "Python, C++, TypeScript, SQL",
+    "Python, C, TypeScript, SQL",
     "PyTorch, TensorFlow, Transformers, LLMs",
     "React, Node.js, Three.js, Web Audio API",
     "AWS, Distributed Systems",
@@ -91,10 +91,10 @@ export const profile: ProfileData = {
   // ─ Roles (Hero Section) ─
   roles: [
     "Audio Systems Engineer",
+    "User-Centered Software Engineer",
     "Machine Learning Systems Engineer",
     "Distributed Systems Engineer",
     "Visual & Interactive Systems Designer",
-    "User-Centered Software Engineer",
   ],
 
   // TODO: update descriptions & summaries
@@ -164,7 +164,7 @@ export const profile: ProfileData = {
         "Music Theory",
       ],
       takeaways: [
-        "Designing constraint-guided creative systems",
+        "Designing for a wide range of users by ensuring musical coherence with freedom for creative exploration",
         "Separating symbolic musical structure from raw audio data",
         "Building scalable timing architectures for interactive audio",
       ],
@@ -174,12 +174,12 @@ export const profile: ProfileData = {
       id: "spice",
       title: "SPICE",
       subtitle: "Synthetic Polyglot Injection for Cross-lingual Evaluation",
-      role: "Research Contributor — Synthetic Language Generation",
+      role: "Research Contributor & Synthetic Language Generation Lead",
       dates: "Nov. – Dec. 2025",
       description:
-        "SPICE is a research pipeline for evaluating whether synthetic languages can substitute for or augment low-resource training data in multilingual NLP. The project introduces a stabilized synthetic language generation and translation system that enables controlled experiments on typological similarity and cross-lingual transfer.",
+        "SPICE is a research pipeline for systematically studying how the diversity of synthetic languages, as well as their similarity to specific low-resource languages, impacts model performance in multilingual NLP. We compare two main scenarios: (1) designing synthetic languages to closely resemble a target low-resource language and fine-tuning on just that, and (2) fine-tuning on groups of synthetic languages that are either highly diverse or have low diversity within the set, to analyze the effects of both diversity and targeted similarity on cross-lingual transfer.",
       system:
-        "A Python-based research pipeline combining deterministic synthetic language generation, corpus-scale translation with lexicon validation, and multilingual fine-tuning with HuggingFace Transformers, PEFT, and bitsandbytes quantization for controlled cross-lingual transfer experiments.",
+        "A Python-based research pipeline that generates synthetic languages with controllable typological features, then performs corpus-scale translation using LLMs with multi-step QA/correction (critic and amend LLMs) to ensure consistency as new vocabulary is introduced. The pipeline enables controlled experiments on both language similarity and diversity, supports multilingual fine-tuning with HuggingFace Transformers, PEFT, and bitsandbytes quantization, and includes algorithms for quantifying similarity and differences between synthetic and real languages for rigorous analysis.",
       impact: [
         "Designed a deterministic synthetic language generation pipeline with fixed orthography, typological feature vectors, and affix inventories",
         "Implemented corpus-scale English-to-synthetic translation with strict lexicon control and conflict detection",
@@ -200,9 +200,10 @@ export const profile: ProfileData = {
           {
             type: "image",
             title: "Project Poster",
-            summary: "Above is the research poster summarizing SPICE.",
+            summary:
+              "The SPICE poster providing visuals that outline major components from the research paper.",
             details:
-              "Kayli designed the pipeline for generating stable constructed languages under strict orthographic and morphological constraints, ensuring consistency across hundreds of translated examples.",
+              "The translation example shown comes from iteration 341 for the synthetic language designed with shared characteristics to Swahili. Each iteration translates a batch of 20 sentences, and the relevant affixes and lexicon entries are displayed from the language's files. All words in the example were already present in the lexicon file: 'lapen' was included in the initially generated lexicon of common words, while the others were added in previous iterations that used the same words.",
             image: "/src/assets/SPICE/presentation.png",
           },
         ],
@@ -225,7 +226,6 @@ export const profile: ProfileData = {
       ],
       collaborators: ["Angela Chen", "Kat Dou", "Joel Manu"],
     },
-
     {
       id: "snort",
       title: "SNORT",
@@ -241,15 +241,17 @@ export const profile: ProfileData = {
         "Extended the Bundle Protocol with storage-aware forwarding and confirmation-driven reliability",
         "Analyzed tradeoffs between latency, redundancy, storage pressure, and network overhead",
         "Evaluated failure scenarios including deep-space delays and concurrent high-priority traffic",
+        "Included system metrics, mathematical modeling, and estimation to ensure feasibility and success of protocol components",
       ],
       evidence: {
         items: [
           {
             type: "pdf",
             title: "Research Paper",
-            summary: "High-level protocol architecture for SNORT.",
+            summary:
+              "The SNORT research paper details the protocol’s physical and software architecture, core algorithms, and evaluation methodology for deep-space networking.",
             details:
-              "Illustrates how storage reservation, forwarding logic, and confirmation signals interact within the SolarNet environment.",
+              "Provides in-depth technical descriptions of reservation-based storage, storage-aware forwarding, redundancy strategies, and confirmation-driven reliability. Defines core methods and algorithms such as bundle reservation, storage allocation, and confirmation signaling. Explains the evaluation methodology, including system metrics, mathematical modeling, and estimation techniques used to ensure feasibility and success under deep-space network constraints. Illustrates how storage reservation, forwarding logic, and confirmation signals interact within the SolarNet environment.",
             pdf: "/docs/SNORT.pdf",
           },
         ],
