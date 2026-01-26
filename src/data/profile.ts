@@ -127,32 +127,16 @@ export const profile: ProfileData = {
               "Kayli authored the system design paper outlining the architecture, timing model, audio engine, and constraint mechanisms that enable Squawk Farm's interactive music creation capabilities.",
             pdf: "/docs/Squawk_Farm.pdf",
           },
-
           {
-            type: "image",
-            title: "Quantized Audio Recording Pipeline",
+            type: "vimeo",
+            title: "Project Presentation",
             summary:
-              "Streamed recording interface converting raw audio into rhythmically aligned loops.",
+              "Final presentation for Squawk Farm in MIT's Interactive Music Systems course. Video starts at demo (42s).",
             details:
-              "Implemented a rolling-buffer recording system with live waveform visualization and draggable loop selection. Recordings are mapped to musically valid loop lengths and processed with pitch correction, normalization, and fade smoothing to ensure clean looping.",
-            image: "/src/assets/squawkfarm/recording.png",
-          },
-          {
-            type: "image",
-            title: "Symbolic Loop Sequencer",
-            summary:
-              "Grid-based editor for rhythmic and melodic control of each creature.",
-            details:
-              "Each animal owns a symbolic AudioLoop mapping quantized time slots to pitch values. Users can add, delete, and reposition notes, shift octaves, and explore auto-generated beat templates while remaining synchronized to global transport.",
-            image: "/src/assets/squawkfarm/sequencer.png",
-          },
-          {
-            type: "image",
-            title: "Beat Templates & Harmonic Roles",
-            summary: "Context-aware rhythm and harmony generation.",
-            details:
-              "Designed a beat template system that generates and scores rhythmic patterns based on role, loop length, and ensemble density. Animals are assigned harmonic roles, with pitch constrained to a pentatonic scale and applied via transposition at playback time.",
-            image: "/src/assets/squawkfarm/harmony.png",
+              "Kayli, Maxine, and Raymond present Squawk Farm as part of the final project showcase for MIT's Interactive Music Systems course. The presentation demonstrates the system's capabilities and design philosophy. The demo starts at 42 seconds into the video.",
+            vimeoUrl:
+              "https://player.vimeo.com/video/1153773353?dnt=1&app_id=122963",
+            startTime: 42,
           },
         ],
       },

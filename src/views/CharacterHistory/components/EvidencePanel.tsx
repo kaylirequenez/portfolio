@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { EvidenceItem } from "../../../types/profile.types";
 import MediaModal from "./MediaModal";
 import PDFPreview from "./PDFPreview";
 import PDFModal from "./PDFModal";
+import VimeoEmbed from "./VimeoEmbed";
 
 interface EvidencePanelProps {
   evidence: {
@@ -20,6 +21,8 @@ export default function EvidencePanel({
   const [showDetails, setShowDetails] = useState(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
   const [isPDFModalOpen, setIsPDFModalOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoCurrentTime, setVideoCurrentTime] = useState<number>(0);
 
   const currentItem = items[currentIndex];
   const hasMultiple = items.length > 1;
@@ -27,11 +30,21 @@ export default function EvidencePanel({
   const goToPrevious = () => {
     setCurrentIndex((i) => (i === 0 ? items.length - 1 : i - 1));
     setShowDetails(false);
+    setVideoCurrentTime(0);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
   };
 
   const goToNext = () => {
     setCurrentIndex((i) => (i === items.length - 1 ? 0 : i + 1));
     setShowDetails(false);
+    setVideoCurrentTime(0);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
   };
 
   return (
@@ -42,19 +55,22 @@ export default function EvidencePanel({
         }`}
       >
         {/* Image / evidence display */}
-        <div className="relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden min-h-[400px]">
+        <div className={`relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden ${
+          currentItem.type === "vimeo" ? "aspect-video w-full" : ""
+        }`}>
           {currentItem.type === "image" ? (
             <img
               src={currentItem.image}
               alt={currentItem.title}
-              className="max-w-full max-h-[60vh] object-contain"
+              className="max-w-full max-h-[50vh] object-contain"
             />
           ) : currentItem.type === "video" ? (
             <video
+              ref={videoRef}
               src={currentItem.video}
               controls
               controlsList="nodownload nofullscreen noremoteplayback"
-              className="max-w-full max-h-[60vh] object-contain"
+              className="max-w-full max-h-[50vh] object-contain"
               playsInline
               disablePictureInPicture
             />
@@ -68,6 +84,12 @@ export default function EvidencePanel({
                   : currentItem.pdf;
                 window.open(normalizedUrl, "_blank", "noopener,noreferrer");
               }}
+            />
+          ) : currentItem.type === "vimeo" ? (
+            <VimeoEmbed
+              vimeoUrl={currentItem.vimeoUrl}
+              title={currentItem.title}
+              startTime={currentItem.startTime}
             />
           ) : null}
 
@@ -111,6 +133,11 @@ export default function EvidencePanel({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                // Capture current video time and pause if it's a video
+                if (currentItem.type === "video" && videoRef.current) {
+                  setVideoCurrentTime(videoRef.current.currentTime);
+                  videoRef.current.pause();
+                }
                 setIsContentModalOpen(true);
               }}
               className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors z-10"
@@ -119,6 +146,21 @@ export default function EvidencePanel({
               <span className="text-lg">⤢</span>
               <span>Expand</span>
             </button>
+          )}
+
+          {/* Open button for Vimeo videos - opens original page with MIT branding */}
+          {currentItem.type === "vimeo" && (
+            <a
+              href={currentItem.vimeoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors z-20"
+              title="Open on Vimeo (includes MIT course link)"
+            >
+              <span className="text-lg">🔗</span>
+              <span>Open</span>
+            </a>
           )}
         </div>
 
@@ -181,6 +223,11 @@ export default function EvidencePanel({
                 onClick={() => {
                   setCurrentIndex(i);
                   setShowDetails(false);
+                  setVideoCurrentTime(0);
+                  if (videoRef.current) {
+                    videoRef.current.pause();
+                    videoRef.current.currentTime = 0;
+                  }
                 }}
                 className={`w-2 h-2 rounded-full transition-all ${
                   i === currentIndex
@@ -197,7 +244,14 @@ export default function EvidencePanel({
             title={currentItem.title}
             imageSrc={currentItem.type === "image" ? currentItem.image : undefined}
             videoSrc={currentItem.type === "video" ? currentItem.video : undefined}
-            onClose={() => setIsContentModalOpen(false)}
+            videoCurrentTime={currentItem.type === "video" ? videoCurrentTime : undefined}
+            onClose={() => {
+              setIsContentModalOpen(false);
+              // Resume video from where it left off when closing modal
+              if (currentItem.type === "video" && videoRef.current && videoCurrentTime > 0) {
+                videoRef.current.currentTime = videoCurrentTime;
+              }
+            }}
           />
         )}
         {isPDFModalOpen && currentItem.type === "pdf" && (

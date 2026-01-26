@@ -8,6 +8,7 @@ import "../../styles/avatar-scene.css";
 import Avatar from "../../avatar/Avatar";
 import AvatarCamera from "../../avatar/AvatarCamera";
 import GridOverlay from "../../components/GridOverlay";
+import HelpButton from "../../components/HelpButton";
 
 interface MainLandingViewProps {
   onEnter: () => void;
@@ -19,6 +20,7 @@ export default function MainLandingView({ onEnter }: MainLandingViewProps) {
   return (
     <div className="avatar-scene-container bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950">
       <GridOverlay />
+      <HelpButton tips={["Click on Avatar to view details"]} />
       <Canvas style={{ width: "100%", height: "100%", display: "block" }}>
         <AvatarCamera preset="landing" />
         <ambientLight intensity={0.6} />

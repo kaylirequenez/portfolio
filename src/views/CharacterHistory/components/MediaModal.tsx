@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 interface MediaModalProps {
@@ -6,6 +6,7 @@ interface MediaModalProps {
   title: string;
   imageSrc?: string;
   videoSrc?: string;
+  videoCurrentTime?: number;
 }
 
 export default function MediaModal({
@@ -13,9 +14,18 @@ export default function MediaModal({
   title,
   imageSrc,
   videoSrc,
+  videoCurrentTime,
 }: MediaModalProps) {
   const [isRotated, setIsRotated] = useState(false);
   const isImage = Boolean(imageSrc);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Set video time when modal opens if we have a current time
+  useEffect(() => {
+    if (videoRef.current && videoCurrentTime !== undefined && videoCurrentTime > 0) {
+      videoRef.current.currentTime = videoCurrentTime;
+    }
+  }, [videoCurrentTime]);
 
   return createPortal(
     <div className="fixed inset-0 z-[9999]">
@@ -69,10 +79,11 @@ export default function MediaModal({
             />
           ) : (
             <video
+              ref={videoRef}
               src={videoSrc}
               controls
               controlsList="nodownload nofullscreen noremoteplayback"
-              autoPlay
+              autoPlay={videoCurrentTime === undefined || videoCurrentTime === 0}
               className="object-contain"
               style={{
                 maxWidth: "90vw",
