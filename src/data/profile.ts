@@ -6,6 +6,9 @@ import type { ProfileData } from "../types/profile.types";
 import sequencerVideo from "../assets/urop/sequencer.mp4";
 import starterCodeVideo from "../assets/urop/starter_code_and_save.mp4";
 import expandableSectionsVideo from "../assets/urop/expandable_sections.mp4";
+import uropGuiImage from "../assets/urop/gui.jpg";
+import uropTableOfContentsImage from "../assets/urop/table_of_contents.png";
+import spicePresentationImage from "../assets/SPICE/presentation.png";
 
 export const profile: ProfileData = {
   // ─ Character Identification ─
@@ -188,7 +191,7 @@ export const profile: ProfileData = {
               "The SPICE poster providing visuals that outline major components from the research paper.",
             details:
               "The translation example shown comes from iteration 341 for the synthetic language designed with shared characteristics to Swahili. Each iteration translates a batch of 20 sentences, and the relevant affixes and lexicon entries are displayed from the language's files. All words in the example were already present in the lexicon file: 'lapen' was included in the initially generated lexicon of common words, while the others were added in previous iterations that used the same words.",
-            image: "/src/assets/SPICE/presentation.png",
+            image: spicePresentationImage,
           },
         ],
       },
@@ -391,7 +394,7 @@ export const profile: ProfileData = {
               "Introduced a reusable abstraction for declaratively mapping audio parameters to interactive visual elements and controls.",
             details:
               "Kayli created a custom p5.js-based library that abstracts the process of mapping audio parameters—such as frequency or amplitude—to visual representations and UI controls. The library exposes configurable functions where users specify the audio parameter to map, the visual placement, and optional behavior, while the underlying system handles rendering and updates. This design allows students to build expressive audiovisual instruments without needing to manage low-level rendering or audio state, significantly lowering the barrier to experimentation.",
-            image: "/src/assets/urop/gui.jpg",
+            image: uropGuiImage,
           },
           {
             type: "video",
@@ -409,7 +412,7 @@ export const profile: ProfileData = {
               "Designed a modular structure for examples and assignments that instructors can easily update and extend.",
             details:
               "Kayli structured the platform so that examples, assignments, and instructional content could be modified or extended without changing core application logic. This modular design allows instructors to update course materials, introduce new exercises, and iterate on curriculum content over time. The approach supports long-term maintainability and was a key step in preparing the project for open-source use.",
-            image: "/src/assets/urop/table_of_contents.png",
+            image: uropTableOfContentsImage,
           },
           {
             type: "video",
