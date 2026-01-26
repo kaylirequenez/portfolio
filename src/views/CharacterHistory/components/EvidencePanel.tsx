@@ -78,12 +78,6 @@ export default function EvidencePanel({
             <PDFPreview
               pdfUrl={currentItem.pdf}
               title={currentItem.title}
-              onOpenFull={() => {
-                const normalizedUrl = currentItem.pdf.startsWith("/src")
-                  ? currentItem.pdf.replace(/^\/src/, "")
-                  : currentItem.pdf;
-                window.open(normalizedUrl, "_blank", "noopener,noreferrer");
-              }}
             />
           ) : currentItem.type === "vimeo" ? (
             <VimeoEmbed

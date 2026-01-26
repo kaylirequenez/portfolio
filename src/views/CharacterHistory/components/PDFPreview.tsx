@@ -1,13 +1,11 @@
 interface PDFPreviewProps {
   pdfUrl: string;
   title: string;
-  onOpenFull?: () => void;
 }
 
 export default function PDFPreview({
   pdfUrl,
   title,
-  onOpenFull,
 }: PDFPreviewProps) {
   // Normalize PDF URL - remove /src prefix if present
   const normalizedUrl = pdfUrl.startsWith("/src")
