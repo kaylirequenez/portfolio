@@ -7,7 +7,6 @@ import ContentBrowserFrame from "../../components/ContentBrowserFrame";
 import { useSwipeTabs } from "../../hooks/useSwipeTabs";
 import ContentTabs from "../../components/ContentTabs";
 import GridOverlay from "../../components/GridOverlay";
-import HelpButton from "../../components/HelpButton";
 
 type CharacterDetailProps = {
   setBioTypedIndex: (i: number) => void;
@@ -51,14 +50,6 @@ export default function CharacterDetailView({
   return (
     <div className="h-full bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950 overflow-hidden">
       <GridOverlay />
-      <HelpButton
-        tips={[
-          "Click on Avatar to return to home",
-          "Click on Archives to view previous projects",
-          "Click on Operations to view previous job experience",
-          "Click on Initiate Contact for LinkedIn, GitHub, or Email",
-        ]}
-      />
 
       <div className="relative h-full flex flex-col">
         {/* TAB BAR (compact layout only) */}

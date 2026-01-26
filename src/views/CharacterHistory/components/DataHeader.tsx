@@ -38,10 +38,6 @@ export function ContentBrowserHeader({
             </h1>
           </div>
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs text-cyan-400/70">
-          <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-          <span>ACTIVE</span>
-        </div>
       </div>
     </div>
   );

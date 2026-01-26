@@ -6,6 +6,7 @@ import Avatar from "../../../avatar/Avatar";
 import AvatarCamera from "../../../avatar/AvatarCamera";
 import StatusBadge from "../components/StatusBadge";
 import DialogueWheel from "../components/DialogueWheel";
+import HelpButton from "../../../components/HelpButton";
 
 type Props = {
   onBack?: () => void;
@@ -82,9 +83,17 @@ export default function CenterPanel({ onBack }: Props) {
       </div>
 
       {/* Status badges */}
-      <div className="flex gap-2 flex-shrink-0">
+      <div className="flex gap-2 items-center flex-shrink-0">
         <StatusBadge label="ACTIVE" />
-        <StatusBadge label="RECRUITING" />
+        <HelpButton
+          fixed={false}
+          tips={[
+            "Click on Avatar to return to home",
+            "Click on Archives to view previous projects",
+            "Click on Operations to view previous job experience",
+            "Click on Initiate Contact for LinkedIn, GitHub, or Email",
+          ]}
+        />
       </div>
 
       {/* Dialogue wheel */}

@@ -8,6 +8,7 @@ import ContentBrowserFrame from "../../../components/ContentBrowserFrame";
 import ContentTabs from "../../../components/ContentTabs";
 import { ContentBrowserHeader } from "./DataHeader";
 import GridOverlay from "../../../components/GridOverlay";
+import HelpButton from "../../../components/HelpButton";
 
 import useIsCompactLayout from "../../../hooks/useIsCompactLayout";
 import { useSwipeTabs } from "../../../hooks/useSwipeTabs";
@@ -71,6 +72,23 @@ export default function ContentBrowserPage({
   return (
     <div className="size-full bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950 overflow-hidden">
       <GridOverlay />
+      <HelpButton
+        tips={
+          hasSelection
+            ? [
+                {
+                  text: "Click the red button to close this file",
+                  icon: "🔴",
+                },
+              ]
+            : [
+                {
+                  text: "Click the back arrow to return to Character",
+                  icon: "←",
+                },
+              ]
+        }
+      />
       <div className="relative h-full flex flex-col p-4">
         <ContentBrowserHeader header={header} onBack={onBack} />
 
