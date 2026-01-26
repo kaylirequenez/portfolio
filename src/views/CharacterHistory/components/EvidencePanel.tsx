@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { EvidenceItem } from "../../../types/profile.types";
 import MediaModal from "./MediaModal";
 import PDFPreview from "./PDFPreview";
@@ -26,6 +26,40 @@ export default function EvidencePanel({
 
   const currentItem = items[currentIndex];
   const hasMultiple = items.length > 1;
+
+  // Preload next and previous items
+  useEffect(() => {
+    const preloadItems = [
+      items[(currentIndex + 1) % items.length],
+      items[(currentIndex - 1 + items.length) % items.length],
+    ];
+
+    preloadItems.forEach((item) => {
+      if (item.type === "image") {
+        const img = new Image();
+        img.src = item.image;
+      } else if (item.type === "video") {
+        const video = document.createElement("video");
+        video.src = item.video;
+        video.preload = "metadata";
+      }
+    });
+  }, [currentIndex, items]);
+
+  // Reset video when switching items
+  useEffect(() => {
+    // Small delay to prevent glitching during rapid switches
+    const timer = setTimeout(() => {
+      if (videoRef.current && currentItem.type === "video") {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+        // Load first frame for poster
+        videoRef.current.load();
+      }
+    }, 0);
+    
+    return () => clearTimeout(timer);
+  }, [currentIndex, currentItem.type]);
 
   const goToPrevious = () => {
     setCurrentIndex((i) => (i === 0 ? items.length - 1 : i - 1));
@@ -60,12 +94,14 @@ export default function EvidencePanel({
         }`}>
           {currentItem.type === "image" ? (
             <img
+              key={`image-${currentIndex}`}
               src={currentItem.image}
               alt={currentItem.title}
               className="max-w-full max-h-[50vh] object-contain"
             />
           ) : currentItem.type === "video" ? (
             <video
+              key={`video-${currentIndex}-${currentItem.video}`}
               ref={videoRef}
               src={currentItem.video}
               controls
@@ -73,6 +109,7 @@ export default function EvidencePanel({
               className="max-w-full max-h-[50vh] object-contain"
               playsInline
               disablePictureInPicture
+              preload="auto"
             />
           ) : currentItem.type === "pdf" ? (
             <PDFPreview

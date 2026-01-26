@@ -9,6 +9,8 @@ import expandableSectionsVideo from "../assets/urop/expandable_sections.mp4";
 import uropGuiImage from "../assets/urop/gui.jpg";
 import uropTableOfContentsImage from "../assets/urop/table_of_contents.png";
 import spicePresentationImage from "../assets/SPICE/presentation.png";
+import amazonCloudwatchImage from "../assets/amazon/cloudwatch.png";
+import amazonMetricsImage from "../assets/amazon/metrics.png";
 
 export const profile: ProfileData = {
   // ─ Character Identification ─
@@ -329,7 +331,7 @@ export const profile: ProfileData = {
               "Constructed the above source code using metric math and query-based definitions to control which metrics appear in the ECS Console and how they are computed and displayed.",
             details:
               "Kayli implemented the source configuration code responsible for defining which CloudWatch metrics appear in ECS dashboards and how they are rendered. This involved explicitly specifying metric namespaces, metric names, dimensions, and chart properties for each dashboard. She handled differences across disabled, enabled, and enhanced Container Insights configurations by using CloudWatch metric math to recreate metrics that are not directly available at lower observability tiers. At the task level, she used query-based metrics to aggregate data across all containers under a single task, enabling multiple containers to be visualized together within a single chart.",
-            image: "/src/assets/amazon/cloudwatch.png",
+            image: amazonCloudwatchImage,
           },
           {
             type: "image",
@@ -338,7 +340,7 @@ export const profile: ProfileData = {
               "Above are some of the CloudWatch metric configurations that now exist within the ECS Console.",
             details:
               "Kayli designed and embedded CloudWatch dashboards directly into the ECS Console at multiple resource levels, tailoring metric visibility and behavior based on the underlying ECS dimension. She ensured that metric periods differed appropriately depending on whether Container Insights was enabled or enhanced, allowing for increased granularity where higher-resolution data was available. Deployment annotations were added across all service-level metrics, enabling engineers to correlate metric changes with deployment events and more easily diagnose regressions or rollout-related issues.",
-            image: "/src/assets/amazon/metrics.png",
+            image: amazonMetricsImage,
           },
         ],
       },
