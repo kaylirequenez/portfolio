@@ -5,10 +5,10 @@
       "has": [
         {
           "type": "host",
-          "value": "portfolio-db0oi2zi7-kaylirequenez.vercel.app"
+          "value": "portfolio-2439tic6b-kaylirequenez.vercel.app"
         }
       ],
-      "destination": "https://portfolio-2439tic6b-kaylirequenez.vercel.app/:path*",
+      "destination": "https://kayli-portfolio.vercel.app/:path*",
       "permanent": true
     }
   ]
