@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { DataItem } from "../../../types/profile.types";
+import {
+  getLastSelectedItem,
+  saveLastSelectedItem,
+} from "../../../utils/mediaStorage";
 
 import EvidencePanel from "./EvidencePanel";
 import DataFile from "./DataFile";
@@ -20,6 +24,7 @@ interface ContentBrowserPageProps {
   data: DataItem[];
   onBack: () => void;
   emptyStateMessage?: string;
+  viewId: string; // "archives" or "operations" - used for selectedItemId persistence
 }
 
 export default function ContentBrowserPage({
@@ -28,8 +33,17 @@ export default function ContentBrowserPage({
   header,
   onBack,
   emptyStateMessage,
+  viewId,
 }: ContentBrowserPageProps) {
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(
+    getLastSelectedItem(viewId),
+  );
+
+  useEffect(() => {
+    saveLastSelectedItem(viewId, selectedItemId);
+    console.log("saved selectedItemId", selectedItemId);
+  }, [selectedItemId, viewId]);
+
   const hasSelection = selectedItemId !== null;
   const currentItem = data.find((item) => item.id === selectedItemId);
   const getItemHeader = (item: DataItem) =>
@@ -59,15 +73,16 @@ export default function ContentBrowserPage({
     );
   };
 
-  const renderEvidence = () => (
-    <div className="h-full min-h-0 w-full">
-      {currentItem ? (
-        <EvidencePanel evidence={currentItem.evidence} />
-      ) : (
-        <div />
-      )}
-    </div>
-  );
+  const renderEvidence = () => {
+    if (!currentItem) return null;
+    return (
+      <EvidencePanel
+        evidence={currentItem.evidence}
+        isVisible={isCompactLayout ? activeTab === 1 : true}
+        fileId={currentItem.id}
+      />
+    );
+  };
 
   return (
     <div className="size-full bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950 overflow-hidden">

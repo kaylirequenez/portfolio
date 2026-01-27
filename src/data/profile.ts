@@ -11,6 +11,7 @@ import uropTableOfContentsImage from "../assets/urop/table_of_contents.png";
 import spicePresentationImage from "../assets/SPICE/presentation.png";
 import amazonCloudwatchImage from "../assets/amazon/cloudwatch.png";
 import amazonMetricsImage from "../assets/amazon/metrics.png";
+import squawkFarmPresentationVideo from "../assets/squawk-farm/squawk_farm.mp4";
 
 export const profile: ProfileData = {
   // ─ Character Identification ─
@@ -133,15 +134,13 @@ export const profile: ProfileData = {
             pdf: "/docs/Squawk_Farm.pdf",
           },
           {
-            type: "vimeo",
+            type: "video",
             title: "Project Presentation",
             summary:
               "Final presentation for Squawk Farm in MIT's Interactive Music Systems course. Video starts at demo (42s).",
             details:
               "Kayli, Maxine, and Raymond present Squawk Farm as part of the final project showcase for MIT's Interactive Music Systems course. The presentation demonstrates the system's capabilities and design philosophy. The demo starts at 42 seconds into the video.",
-            vimeoUrl:
-              "https://player.vimeo.com/video/1153773353?dnt=1&app_id=122963",
-            startTime: 42,
+            video: squawkFarmPresentationVideo,
           },
         ],
       },

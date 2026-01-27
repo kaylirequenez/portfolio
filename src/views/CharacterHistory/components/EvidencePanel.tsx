@@ -1,31 +1,103 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import type { EvidenceItem } from "../../../types/profile.types";
 import MediaModal from "./MediaModal";
 import PDFPreview from "./PDFPreview";
 import PDFModal from "./PDFModal";
-import VimeoEmbed from "./VimeoEmbed";
+import {
+  saveMediaTime,
+  getMediaTime,
+  clearMediaTime,
+  getLastIndex,
+  saveLastIndex,
+} from "../../../utils/mediaStorage";
 
 interface EvidencePanelProps {
   evidence: {
     items: EvidenceItem[];
   };
-  horizontal?: boolean;
+  isVisible?: boolean;
+  fileId: string;
 }
 
 export default function EvidencePanel({
   evidence,
-  horizontal = false,
+  isVisible = true,
+  fileId,
 }: EvidencePanelProps) {
   const items = evidence.items;
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Restore last viewed index if available, otherwise start at 0
+  const lastIndex = getLastIndex(fileId);
+  const initialIndex = lastIndex !== null ? lastIndex : 0;
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [showDetails, setShowDetails] = useState(false);
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
   const [isPDFModalOpen, setIsPDFModalOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoCurrentTime, setVideoCurrentTime] = useState<number>(0);
+  // Get initial media time for the restored index
+  const savedMediaTime = getMediaTime(fileId, initialIndex);
+  const currentItemAtInit = items[initialIndex];
+
+  // Initialize video storage with 42s for Squawk Farm presentation video if no saved time exists
+  // This ensures the video starts at 42 seconds on first load
+  if (
+    fileId === "squawk-farm" &&
+    initialIndex === 1 && // Presentation video is the second item (index 1)
+    currentItemAtInit?.type === "video" &&
+    savedMediaTime === 0
+  ) {
+    saveMediaTime(fileId, initialIndex, 42);
+  }
+
+  // Use saved time, or 42 for Squawk Farm presentation, or 0 for other videos
+  const initialMediaTime =
+    savedMediaTime > 0
+      ? savedMediaTime
+      : fileId === "squawk-farm" && initialIndex === 1
+        ? 42
+        : 0;
+  const [mediaCurrentTime, setMediaCurrentTime] =
+    useState<number>(initialMediaTime);
+  // Use refs to capture current values for cleanup
+  const currentItemRef = useRef<EvidenceItem | null>(null);
+  const mediaCurrentTimeRef = useRef<number>(initialMediaTime);
+  const currentIndexRef = useRef<number>(initialIndex);
 
   const currentItem = items[currentIndex];
   const hasMultiple = items.length > 1;
+
+  // Keep refs in sync
+  useEffect(() => {
+    currentItemRef.current = currentItem;
+  }, [currentItem]);
+
+  useEffect(() => {
+    mediaCurrentTimeRef.current = mediaCurrentTime;
+  }, [mediaCurrentTime]);
+
+  // Helper: Save current media time
+  const saveCurrentMediaTime = useCallback(() => {
+    const item = currentItemRef.current;
+    const index = currentIndexRef.current;
+    if (!item || !fileId) return;
+
+    // Use tracked media time ref
+    const time = mediaCurrentTimeRef.current;
+    if (time > 0 && item.type === "video") {
+      saveMediaTime(fileId, index, time);
+    }
+  }, [fileId]);
+
+  // Helper: Get saved media time
+  const getSavedMediaTime = useCallback((): number => {
+    return getMediaTime(fileId, currentIndex);
+  }, [fileId, currentIndex]);
+
+  // Helper: Pause current media
+  const pauseCurrentMedia = useCallback(() => {
+    if (currentItem.type === "video" && videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, [currentItem.type]);
 
   // Preload next and previous items
   useEffect(() => {
@@ -46,58 +118,108 @@ export default function EvidencePanel({
     });
   }, [currentIndex, items]);
 
-  // Reset video when switching items
+  // Update currentIndexRef when index changes
   useEffect(() => {
-    // Small delay to prevent glitching during rapid switches
-    const timer = setTimeout(() => {
-      if (videoRef.current && currentItem.type === "video") {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-        // Load first frame for poster
-        videoRef.current.load();
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  // Helper: Wait for video metadata to be ready
+  const waitForVideoReady = (video: HTMLVideoElement): Promise<void> => {
+    if (video.readyState >= 1) {
+      // HAVE_METADATA or higher - already ready
+      return Promise.resolve();
+    }
+    // Wait for metadata to load
+    return new Promise((resolve) => {
+      const handleLoadedMetadata = () => {
+        video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        resolve();
+      };
+      video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    });
+  };
+
+  // Restore media time when switching to a media item
+  useEffect(() => {
+    const savedTime = getSavedMediaTime();
+
+    if (currentItem.type === "video" && videoRef.current) {
+      const video = videoRef.current;
+
+      (async () => {
+        await waitForVideoReady(video);
+        if (videoRef.current) {
+          videoRef.current.currentTime = savedTime;
+          mediaCurrentTimeRef.current = savedTime;
+          setMediaCurrentTime(savedTime);
+          if (savedTime > 0) {
+            videoRef.current.pause();
+          }
+        }
+      })();
+    }
+  }, [currentIndex, currentItem, getSavedMediaTime]);
+
+  // Pause media when panel becomes invisible (e.g., switching tabs in compact layout)
+  useEffect(() => {
+    if (!isVisible) {
+      saveCurrentMediaTime();
+      pauseCurrentMedia();
+    }
+  }, [isVisible, saveCurrentMediaTime, pauseCurrentMedia]);
+
+  // Save media time and last index when component unmounts (e.g., closing file or switching tabs)
+  useEffect(() => {
+    return () => {
+      // Save on unmount using refs to get current values
+      const item = currentItemRef.current;
+      const index = currentIndexRef.current;
+      if (!fileId) return;
+
+      // Save last viewed index
+      saveLastIndex(fileId, index);
+
+      // Save media time if current item is video
+      if (item && item.type === "video") {
+        // Use tracked media time ref (updated on pause and time changes)
+        saveMediaTime(fileId, index, mediaCurrentTimeRef.current);
       }
-    }, 0);
-    
-    return () => clearTimeout(timer);
-  }, [currentIndex, currentItem.type]);
+    };
+  }, [fileId]);
+
+  // Helper: Navigate to a specific index
+  const navigateToIndex = useCallback(
+    (newIndex: number) => {
+      saveCurrentMediaTime();
+      pauseCurrentMedia();
+      setCurrentIndex(newIndex);
+      setShowDetails(false);
+      setMediaCurrentTime(0);
+    },
+    [saveCurrentMediaTime, pauseCurrentMedia],
+  );
 
   const goToPrevious = () => {
-    setCurrentIndex((i) => (i === 0 ? items.length - 1 : i - 1));
-    setShowDetails(false);
-    setVideoCurrentTime(0);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
+    const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
+    navigateToIndex(newIndex);
   };
 
   const goToNext = () => {
-    setCurrentIndex((i) => (i === items.length - 1 ? 0 : i + 1));
-    setShowDetails(false);
-    setVideoCurrentTime(0);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
+    const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
+    navigateToIndex(newIndex);
   };
 
   return (
     <div className="h-full flex-1 min-h-0 border-2 border-cyan-400/40 rounded-lg overflow-hidden">
-      <div
-        className={`h-full flex flex-col p-4 space-y-4 ${
-          horizontal ? "flex-row gap-4" : ""
-        }`}
-      >
+      <div className="h-full flex flex-col p-4 space-y-4">
         {/* Image / evidence display */}
-        <div className={`relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden ${
-          currentItem.type === "vimeo" ? "aspect-video w-full" : ""
-        }`}>
+        <div className="relative group bg-slate-700/50 border-2 border-cyan-400/20 rounded-lg flex items-center justify-center overflow-hidden">
           {currentItem.type === "image" ? (
             <img
               key={`image-${currentIndex}`}
               src={currentItem.image}
               alt={currentItem.title}
-              className="max-w-full max-h-[50vh] object-contain"
+              className="max-w-full object-contain"
             />
           ) : currentItem.type === "video" ? (
             <video
@@ -106,22 +228,36 @@ export default function EvidencePanel({
               src={currentItem.video}
               controls
               controlsList="nodownload nofullscreen noremoteplayback"
-              className="max-w-full max-h-[50vh] object-contain"
+              className="max-w-full object-contain"
               playsInline
               disablePictureInPicture
               preload="auto"
+              onTimeUpdate={() => {
+                // Keep media time ref in sync
+                if (videoRef.current) {
+                  const time = videoRef.current.currentTime;
+                  mediaCurrentTimeRef.current = time;
+                  setMediaCurrentTime(time);
+                }
+              }}
+              onPause={() => {
+                // Update time ref when user pauses (will be saved on unmount)
+                if (videoRef.current) {
+                  const time = videoRef.current.currentTime;
+                  mediaCurrentTimeRef.current = time;
+                  setMediaCurrentTime(time);
+                }
+              }}
+              onEnded={() => {
+                // Reset to beginning when video ends
+                if (videoRef.current) {
+                  videoRef.current.currentTime = 0;
+                  clearMediaTime(fileId, currentIndex);
+                }
+              }}
             />
           ) : currentItem.type === "pdf" ? (
-            <PDFPreview
-              pdfUrl={currentItem.pdf}
-              title={currentItem.title}
-            />
-          ) : currentItem.type === "vimeo" ? (
-            <VimeoEmbed
-              vimeoUrl={currentItem.vimeoUrl}
-              title={currentItem.title}
-              startTime={currentItem.startTime}
-            />
+            <PDFPreview pdfUrl={currentItem.pdf} title={currentItem.title} />
           ) : null}
 
           {/* Action buttons - always visible for all media types */}
@@ -160,39 +296,26 @@ export default function EvidencePanel({
           {/* Expand button for images and videos - always visible */}
           {(currentItem.type === "image" || currentItem.type === "video") &&
             !isContentModalOpen && (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                // Capture current video time and pause if it's a video
-                if (currentItem.type === "video" && videoRef.current) {
-                  setVideoCurrentTime(videoRef.current.currentTime);
-                  videoRef.current.pause();
-                }
-                setIsContentModalOpen(true);
-              }}
-              className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors z-10"
-              title="View in full screen"
-            >
-              <span className="text-lg">⤢</span>
-              <span>Expand</span>
-            </button>
-          )}
-
-          {/* Open button for Vimeo videos - opens original page with MIT branding */}
-          {currentItem.type === "vimeo" && (
-            <a
-              href={currentItem.vimeoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors z-20"
-              title="Open on Vimeo (includes MIT course link)"
-            >
-              <span className="text-lg">🔗</span>
-              <span>Open</span>
-            </a>
-          )}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Capture current video time and pause
+                  if (currentItem.type === "video" && videoRef.current) {
+                    const time = videoRef.current.currentTime;
+                    setMediaCurrentTime(time);
+                    mediaCurrentTimeRef.current = time;
+                    videoRef.current.pause();
+                  }
+                  setIsContentModalOpen(true);
+                }}
+                className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1.5 bg-slate-800/80 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/20 transition-colors z-10"
+                title="View in full screen"
+              >
+                <span className="text-lg">⤢</span>
+                <span>Expand</span>
+              </button>
+            )}
         </div>
 
         {/* Summary */}
@@ -251,15 +374,7 @@ export default function EvidencePanel({
             {items.map((_, i) => (
               <button
                 key={i}
-                onClick={() => {
-                  setCurrentIndex(i);
-                  setShowDetails(false);
-                  setVideoCurrentTime(0);
-                  if (videoRef.current) {
-                    videoRef.current.pause();
-                    videoRef.current.currentTime = 0;
-                  }
-                }}
+                onClick={() => navigateToIndex(i)}
                 className={`w-2 h-2 rounded-full transition-all ${
                   i === currentIndex
                     ? "bg-emerald-400 w-4"
@@ -273,14 +388,28 @@ export default function EvidencePanel({
         {isContentModalOpen && currentItem && (
           <MediaModal
             title={currentItem.title}
-            imageSrc={currentItem.type === "image" ? currentItem.image : undefined}
-            videoSrc={currentItem.type === "video" ? currentItem.video : undefined}
-            videoCurrentTime={currentItem.type === "video" ? videoCurrentTime : undefined}
-            onClose={() => {
+            imageSrc={
+              currentItem.type === "image" ? currentItem.image : undefined
+            }
+            videoSrc={
+              currentItem.type === "video" ? currentItem.video : undefined
+            }
+            videoCurrentTime={
+              currentItem.type === "video" ? mediaCurrentTime : undefined
+            }
+            onClose={(finalVideoTime) => {
               setIsContentModalOpen(false);
-              // Resume video from where it left off when closing modal
-              if (currentItem.type === "video" && videoRef.current && videoCurrentTime > 0) {
-                videoRef.current.currentTime = videoCurrentTime;
+              // Sync panel video to modal's final time
+              if (
+                currentItem.type === "video" &&
+                videoRef.current &&
+                finalVideoTime !== undefined
+              ) {
+                const time = finalVideoTime;
+                videoRef.current.currentTime = time;
+                setMediaCurrentTime(time);
+                // Save to localStorage
+                saveMediaTime(fileId, currentIndex, time);
               }
             }}
           />

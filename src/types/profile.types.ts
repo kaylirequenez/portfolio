@@ -16,8 +16,7 @@ type EvidenceBase = {
 export type EvidenceItem =
   | (EvidenceBase & { type: "image"; image: string })
   | (EvidenceBase & { type: "video"; video: string })
-  | (EvidenceBase & { type: "pdf"; pdf: string })
-  | (EvidenceBase & { type: "vimeo"; vimeoUrl: string; startTime?: number });
+  | (EvidenceBase & { type: "pdf"; pdf: string });
 
 export interface Evidence {
   items: EvidenceItem[];
