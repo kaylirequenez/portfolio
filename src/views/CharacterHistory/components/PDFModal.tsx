@@ -54,12 +54,28 @@ export default function PDFModal({
             <span>Open in Tab</span>
           </a>
 
-          {/* PDF iframe */}
-          <iframe
-            src={normalizedUrl}
-            title={title}
+          {/* PDF - use object tag for better browser compatibility */}
+          <object
+            data={normalizedUrl}
+            type="application/pdf"
             className="w-full h-full border-0 rounded"
-          />
+            aria-label={`PDF: ${title}`}
+          >
+            {/* Fallback if object fails */}
+            <div className="flex flex-col items-center justify-center gap-4 p-8 text-cyan-300/70">
+              <p className="font-mono text-sm uppercase tracking-wider">
+                PDF cannot be displayed
+              </p>
+              <a
+                href={normalizedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-cyan-400/20 border border-cyan-400/40 rounded text-cyan-300 font-mono text-xs uppercase tracking-wider hover:bg-cyan-400/30 transition-colors"
+              >
+                Open PDF in new tab
+              </a>
+            </div>
+          </object>
 
           {/* Title */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2
