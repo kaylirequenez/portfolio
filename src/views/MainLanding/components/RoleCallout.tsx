@@ -17,7 +17,13 @@ const MIN_SCALE = 0.8;
 export default function RoleCallout({ roles }: RoleCalloutProps) {
   const groupRef = useRef<THREE.Group>(null);
   const textRef = useRef<THREE.Mesh>(null);
-  const { camera, clock } = useThree();
+  const { camera, clock, size } = useThree();
+
+  // Calculate responsive font size based on viewport width
+  const isMobile = size.width < 768;
+  const isCompact = size.width < 480;
+  const fontSize = isCompact ? 0.11 : isMobile ? 0.13 : 0.16;
+  const letterSpacing = isCompact ? 0.025 : isMobile ? 0.03 : 0.04;
 
   const [index, setIndex] = useState(0);
   const startTime = useRef(clock.getElapsedTime());
@@ -69,13 +75,14 @@ export default function RoleCallout({ roles }: RoleCalloutProps) {
       <Text
         ref={textRef}
         font="/fonts/VT323-Regular.ttf"
-        fontSize={0.16}
-        letterSpacing={0.04}
+        fontSize={fontSize}
+        letterSpacing={letterSpacing}
         color="#D6DAE8"
         anchorX="center"
         anchorY="middle"
         material-transparent
         material-opacity={0}
+        maxWidth={isMobile ? 2.5 : 4}
       >
         {roles[index]}
       </Text>

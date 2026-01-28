@@ -1,15 +1,21 @@
 .avatar-scene-container {
   position: relative;
-  width: 100%;
+  width: 100vw;
+  /* Fallback for browsers that don't support dvh */
+  min-height: 100vh;
   height: 100vh;
-  min-height: 420px;
+  /* Fix mobile viewport height issues - use dvh for dynamic viewport height */
+  min-height: 100dvh;
+  height: 100dvh;
+  /* Allow scrolling on very small screens */
+  overflow: auto;
 }
 
-.avatar-scene-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+/* On very small screens, allow scrolling */
+@media (max-height: 500px) {
+  .avatar-scene-container {
+    overflow-y: auto;
+  }
 }
 
 @keyframes gridScroll {

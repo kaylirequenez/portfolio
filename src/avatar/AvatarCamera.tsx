@@ -22,15 +22,34 @@ interface AvatarCameraProps {
 }
 
 export default function AvatarCamera({ preset }: AvatarCameraProps) {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
 
   useEffect(() => {
     const { position, lookAt } = CAMERA_PRESETS[preset];
 
-    camera.position.set(...position);
-    camera.lookAt(...lookAt);
+    // Adjust camera for mobile/compact screens
+    const isMobile = size.width < 768;
+    const isCompact = size.height < 600;
+
+    let adjustedPosition: [number, number, number] = [...position];
+    let adjustedLookAt: [number, number, number] = [...lookAt];
+
+    if (preset === "landing") {
+      if (isMobile) {
+        // Move camera closer and adjust for mobile
+        adjustedPosition = [0, 0.3, 2.2];
+        adjustedLookAt = [0, -0.3, 0];
+      } else if (isCompact) {
+        // Adjust for compact height
+        adjustedPosition = [0, 0.4, 2.4];
+        adjustedLookAt = [0, -0.25, 0];
+      }
+    }
+
+    camera.position.set(...adjustedPosition);
+    camera.lookAt(...adjustedLookAt);
     camera.updateProjectionMatrix();
-  }, [camera, preset]);
+  }, [camera, preset, size.width, size.height]);
 
   return null;
 }

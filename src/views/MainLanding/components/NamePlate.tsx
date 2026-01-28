@@ -11,11 +11,24 @@ type NamePlateProps = {
 
 export default function NamePlate({ name, headline }: NamePlateProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const { camera, clock } = useThree();
+  const { camera, clock, size } = useThree();
+
+  // Calculate responsive font sizes based on viewport width
+  const isMobile = size.width < 768;
+  const isCompact = size.width < 480;
+  const isShort = size.height < 600;
+  
+  // Base sizes, scaled down for mobile
+  const nameFontSize = isCompact ? 0.24 : isMobile ? 0.28 : 0.36;
+  const nameFontSizeMain = isCompact ? 0.23 : isMobile ? 0.27 : 0.35;
+  const headlineFontSize = isCompact ? 0.06 : isMobile ? 0.07 : 0.09;
+  const headlineLetterSpacing = isCompact ? 0.02 : isMobile ? 0.025 : 0.03;
 
   /* ---------------- Always centered above avatar ---------------- */
+  // Adjust vertical position for smaller screens - lower it to prevent cutoff
+  const nameplateY = isShort ? 0.6 : isMobile ? 0.7 : 1.0;
   const { position } = useSpring({
-    position: [0, 1, 0.3],
+    position: [0, nameplateY, 0.3],
     config: { tension: 120, friction: 16 },
   });
 
@@ -39,7 +52,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
       {/* Shadow pass */}
       <Text
         font="/fonts/VT323-Regular.ttf"
-        fontSize={0.36}
+        fontSize={nameFontSize}
         color="#5EE6D6"
         anchorX="center"
         anchorY="middle"
@@ -57,7 +70,7 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
       {/* Main name */}
       <Text
         font="/fonts/VT323-Regular.ttf"
-        fontSize={0.35}
+        fontSize={nameFontSizeMain}
         color="#EAEAF0"
         anchorX="center"
         anchorY="middle"
@@ -69,12 +82,13 @@ export default function NamePlate({ name, headline }: NamePlateProps) {
       {/* Headline */}
       <Text
         font="/fonts/VT323-Regular.ttf"
-        fontSize={0.09}
-        letterSpacing={0.03}
+        fontSize={headlineFontSize}
+        letterSpacing={headlineLetterSpacing}
         color="#8F94AA"
         anchorX="center"
         anchorY="middle"
         position={[0, -0.1, 0]}
+        maxWidth={isMobile ? 2.5 : 4}
       >
         {headline}
       </Text>

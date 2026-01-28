@@ -11,7 +11,7 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import type { GLTF } from "three-stdlib";
 import { a, useSpring } from "@react-spring/three";
 import avatar from "../assets/avatar.glb?url";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import type { SpringValue } from "@react-spring/core";
 
 type GLTFResult = GLTF & {
@@ -55,8 +55,22 @@ const AvatarInner = (
     avatar,
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, avatarRef);
+  const { size } = useThree();
 
   const [hovered, setHovered] = useState(false);
+
+  // Calculate responsive scale based on viewport size
+  const isMobile = size.width < 768;
+  const isCompact = size.height < 600;
+  
+  // Base scale for mainView, adjusted for mobile/compact
+  const baseScale = mainView 
+    ? (isCompact ? 0.9 : isMobile ? 1.0 : 1.2)
+    : (hovered ? 0.65 : 0.63);
+  
+  const hoverScale = mainView
+    ? (isCompact ? 1.03 : isMobile ? 1.04 : 1.24)
+    : (hovered ? 0.65 : 0.63);
 
   /* ---------------- Idle breathing animation ---------------- */
   useLayoutEffect(() => {
@@ -69,14 +83,18 @@ const AvatarInner = (
   }, [actions]);
 
   /* ---------------- Position animation (keep centered always) ---------------- */
+  // Adjust position for mobile to prevent cutoff
+  const avatarY = mainView 
+    ? (isCompact ? -1.2 : isMobile ? -1.3 : -1.4)
+    : 0.075;
   const { position } = useSpring({
-    position: mainView ? [0, -1.4, 0] : [0, 0.075, 0],
+    position: mainView ? [0, avatarY, 0] : [0, 0.075, 0],
     config: { mass: 1, tension: 120, friction: 14 },
   });
 
   /* ---------------- Hover scale ---------------- */
   const { scale } = useSpring({
-    scale: mainView ? (hovered ? 1.24 : 1.2) : hovered ? 0.65 : 0.63,
+    scale: hovered ? hoverScale : baseScale,
     config: { tension: 180, friction: 18 },
   });
 
